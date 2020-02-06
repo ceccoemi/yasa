@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 RUN apt-get update --fix-missing
 
-RUN apt-get install -y g++ cmake libgtest-dev lcov
+RUN apt-get install -y g++ cmake libgtest-dev lcov libsqlite3-dev
 
 ### Compile and install Google Test ###
 RUN cd /usr/src/gtest && \
