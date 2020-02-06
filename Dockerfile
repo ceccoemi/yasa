@@ -16,4 +16,7 @@ RUN mkdir build && \
     cd build && \
     cmake -j$(nproc) .. && \
     make -j$(nproc) && \
-    tests/runAllTests
+    tests/runAllTests && \
+    make install
+
+CMD ["yasa"]
