@@ -1,7 +1,10 @@
 file(GLOB headerFiles *.h)
 file(GLOB sourceFiles *.cc)
+
 add_executable(yasa ${headerFiles} ${sourceFiles})
 target_link_libraries(yasa gcov)
+
+add_library(yasalib ${headerFiles} ${sourceFiles})
 
 include(GNUInstallDirs)
 install(
