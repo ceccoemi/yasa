@@ -17,6 +17,14 @@ RUN mkdir build && \
     cmake -j$(nproc) .. && \
     make -j$(nproc) && \
     tests/runAllTests && \
+    src/yasa && \
+    lcov --capture --directory . --output-file coverage.info && \
+    lcov --remove coverage.info \
+        '/usr/include/*' \
+        '/usr/local/include/*' \
+        '/usr/local/src/yasa/tests/*' \
+        --quiet --output-file coverage.info && \
+    lcov --list coverage.info && \
     make install
 
 CMD ["yasa"]
