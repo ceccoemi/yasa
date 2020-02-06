@@ -1,0 +1,7 @@
+# Ignore everything...
+**
+
+# ...but
+!/CMakeLists.txt
+!/src
+!/tests
