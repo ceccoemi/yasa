@@ -10,11 +10,11 @@ target_link_libraries(
 )
 gtest_discover_tests(sentimentTest SentimentTest.cc)
 
-add_executable(yasaDbTest YasaDbTest.cc)
+add_executable(sqliteYasaTest SqliteYasaTest.cc)
 target_link_libraries(
-	yasaDbTest ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
+	sqliteYasaTest ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
 )
-gtest_discover_tests(yasaDbTest YasaDbTest.cc)
+gtest_discover_tests(sqliteYasaTest SqliteYasaTest.cc)
 
 file(GLOB sourceFiles *.cc)
 add_executable(runAllTests ${sourceFiles})

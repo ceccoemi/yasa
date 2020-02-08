@@ -1,4 +1,4 @@
-#include "../src/YasaDb.h"
+#include "../src/SqliteYasa.h"
 
 #include <gtest/gtest.h>
 #include <fstream>
@@ -6,11 +6,11 @@
 #include <string>
 
 TEST(yasaDbTest, throwRuntimeErrorWhenFilenameIsInvalid) {
-	ASSERT_THROW(YasaDb("/"), std::runtime_error);
+	ASSERT_THROW(SqliteYasa("/"), std::runtime_error);
 }
 
 TEST(yasaDbTest, getDbPath) {
-	YasaDb db = YasaDb("test.db");
+	SqliteYasa db = SqliteYasa("test.db");
 	std::string path = db.getDbPath();
 	ASSERT_EQ(path.front(), '/');
 	ASSERT_NE(path.rfind("test.db"), std::string::npos);
@@ -19,7 +19,7 @@ TEST(yasaDbTest, getDbPath) {
 }
 
 TEST(yasaDbTest, testDbFileCreation) {
-	YasaDb db = YasaDb("test.db");
+	SqliteYasa db = SqliteYasa("test.db");
 	std::string path = db.getDbPath();
 	std::ifstream infile(path);
 	ASSERT_TRUE(infile.good());

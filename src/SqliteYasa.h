@@ -2,9 +2,9 @@
 
 #include <string>
 
-class YasaDb {
+class SqliteYasa {
 public:
-	YasaDb(std::string dbName);
+	SqliteYasa(std::string dbName);
 
 	std::string getDbPath();
 
