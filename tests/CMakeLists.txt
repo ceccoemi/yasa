@@ -8,7 +8,13 @@ add_executable(sentimentTest SentimentTest.cc)
 target_link_libraries(
 	sentimentTest ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
 )
-gtest_discover_tests(sentimentTest ${sourceFiles})
+gtest_discover_tests(sentimentTest SentimentTest.cc)
+
+add_executable(sqlite3Test Sqlite3Test.cc)
+target_link_libraries(
+	sqlite3Test ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
+)
+gtest_discover_tests(sqlite3Test Sqlite3Test.cc)
 
 file(GLOB sourceFiles *.cc)
 add_executable(runAllTests ${sourceFiles})

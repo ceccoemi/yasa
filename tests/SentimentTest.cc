@@ -1,12 +1,14 @@
 #include <gtest/gtest.h>
 #include <Sentiment.h>
 
-TEST(sentimentTest, positiveTest) {
-	yasa::Sentiment pos = yasa::Sentiment::positive;
-	ASSERT_EQ(pos, 1);
+TEST(sentimentTest, positiveDifferentFromNegative) {
+	ASSERT_NE(Sentiment::positive, Sentiment::negative);
 }
 
-TEST(sentimentTest, negativeTest) {
-	yasa::Sentiment neg = yasa::Sentiment::negative;
-	ASSERT_EQ(neg, 0);
+TEST(sentimentTest, positiveEqualsToPositive) {
+	ASSERT_EQ(Sentiment::positive, Sentiment::positive);
+}
+
+TEST(sentimentTest, positiveEqualsToNegative) {
+	ASSERT_EQ(Sentiment::negative, Sentiment::negative);
 }
