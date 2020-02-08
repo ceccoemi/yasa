@@ -1,6 +1,7 @@
 #include "Sqlite3.h"
 
 #include <sqlite3.h>
+#include <stddef.h>
 #include <unistd.h>
 #include <stdexcept>
 
@@ -15,7 +16,9 @@ Sqlite3::Sqlite3(std::string dbName) {
 }
 
 std::string Sqlite3::getDbPath() {
-	char cwd[128];
-	getcwd(cwd, 128);
+	// TODO smarter way to determine pathSize
+	size_t pathSize = 100 + Sqlite3::dbName.size();
+	char cwd[pathSize];
+	getcwd(cwd, pathSize);
 	return std::string(cwd) + "/" + Sqlite3::dbName;
 }
