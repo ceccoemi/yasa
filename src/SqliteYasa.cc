@@ -53,4 +53,3 @@ SqliteYasa::QueryResult SqliteYasa::query(std::string sqlQuery) {
 	sqlite3_close(db);
 	return queryResult;
 }
-

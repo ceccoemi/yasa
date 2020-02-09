@@ -34,19 +34,19 @@ TEST(yasaDbTest, wrongSqlSyntaxThrowRuntimeError) {
 
 TEST(yasaDbTest, testSimpleQueries) {
 	SqliteYasa db = SqliteYasa("test.db");
-	db.query("create table testTable("
-			"id int primary key not null,"
-			"name varchar(30) not null);");
+	db.query("CREATE TABLE testTable("
+			"id int PRIMARY KEY NOT NULL,"
+			"name VARCHAR(30) NOT NULL);");
 	SqliteYasa::QueryResult result = db.query(
-			"select name from sqlite_master where type = 'table';");
+			"SELECT name FROM sqlite_master WHERE type = 'table';");
 	ASSERT_EQ(result["name"], std::vector<std::string> { "testTable" });
 
-	db.query("insert into testTable(id, name) values(1000, 'John');");
-	result = db.query("select * from testTable where id = 1000");
+	db.query("INSERT INTO testTable(id, name) VALUES(1000, 'John');");
+	result = db.query("SELECT * FROM testTable WHERE id = 1000");
 	ASSERT_EQ(result["id"], std::vector<std::string> { "1000" });
 	ASSERT_EQ(result["name"], std::vector<std::string> { "John" });
 
-	db.query("drop table testTable;");
-	result = db.query("select name from sqlite_master where type = 'table';");
+	db.query("DROP TABLE TESTTABLE;");
+	result = db.query("SELECT name FROM sqlite_master WHERE type = 'table';");
 	ASSERT_EQ(result["name"], std::vector<std::string> { });
 }

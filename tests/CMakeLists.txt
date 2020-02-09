@@ -16,6 +16,12 @@ target_link_libraries(
 )
 gtest_discover_tests(sqliteYasaTest SqliteYasaTest.cc)
 
+add_executable(dictionaryTest DictionaryTest.cc)
+target_link_libraries(
+	dictionaryTest ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
+)
+gtest_discover_tests(dictionaryTest DictionaryTest.cc)
+
 file(GLOB sourceFiles *.cc)
 add_executable(runAllTests ${sourceFiles})
 target_link_libraries(
