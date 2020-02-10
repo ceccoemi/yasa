@@ -155,4 +155,13 @@ TEST(ArgumentParserTest, getNegativesDir) {
 	ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, )
+TEST(ArgumentParserTest, getFileToClassify) {
+	int numArgs { 4 };
+	const char *argValues[numArgs] =
+			{ "./yasa", "classify", "-f", "aFileToClassify" };
+	ArgumentParser argumentParser(numArgs, argValues);
+	argumentParser.parseArgs();
+	std::string actual = argumentParser.getFileToClassify();
+	std::string expected { "aFileToClassify" };
+	ASSERT_EQ(actual, expected);
+}

@@ -16,9 +16,11 @@ public:
 	static std::string getClassifyUsageMessage();
 	static std::string getPositivesDirMessage();
 	static std::string getNegativesDirMessage();
-	int parseArgs();
+	static std::string getFileToClassifyMessage();
 	void handleFirstArgument();
 	void handleTrainArguments();
+	void handleClassifyArgument();
+	int parseArgs();
 private:
 	int numArgs;
 	std::vector<std::string> argValues;

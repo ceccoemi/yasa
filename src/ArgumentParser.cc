@@ -51,23 +51,41 @@ std::string ArgumentParser::getNegativesDirMessage() {
 	return negativesDirMessage;
 }
 
+std::string ArgumentParser::getFileToClassifyMessage() {
+	std::string fileToClassifyMessage { "FileToClassify Message." };
+	return fileToClassifyMessage;
+}
+
 void ArgumentParser::handleTrainArguments() {
 	for (int i = 2; i < numArgs; ++i) {
 		if ((argValues[i] == "-h") || (argValues[i] == "--help")) {
 			message = getTrainUsageMessage();
 		} else if ((argValues[i] == "-p") || (argValues[i] == "--positives")) {
 			message = getPositivesDirMessage();
-			if (i + 1 < numArgs) {
+			if ((i + 1 < numArgs) && positivesDir.empty()){
 				positivesDir = argValues[++i];
 			} else {
 				message = getTrainUsageMessage();
 			}
 		} else if ((argValues[i] == "-n") || (argValues[i] == "--negatives")) {
 			message = getNegativesDirMessage();
-			if (i + 1 < numArgs) {
+			if ((i + 1 < numArgs) && negativesDir.empty()) {
 				negativesDir = argValues[++i];
 			} else {
 				message = getTrainUsageMessage();
+			}
+		}
+	}
+}
+
+void ArgumentParser::handleClassifyArgument() {
+	if (numArgs > 2) {
+		if ((argValues[2] == "-f") || (argValues[2] == "--file")) {
+			message = getFileToClassifyMessage();
+			if (numArgs > 3) {
+				fileToClassify = argValues[3];
+			} else {
+				message = getClassifyUsageMessage();
 			}
 		}
 	}
@@ -81,7 +99,7 @@ void ArgumentParser::handleFirstArgument() {
 		handleTrainArguments();
 	} else if (argValues[1] == "classify") {
 		message = getClassifyUsageMessage();
-//TODO		handleClassifyArgument();
+		handleClassifyArgument();
 	} else {
 		message = getGlobalUsageMessage();
 	}
