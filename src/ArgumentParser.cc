@@ -62,7 +62,7 @@ void ArgumentParser::handleTrainArguments() {
 			message = getTrainUsageMessage();
 		} else if ((argValues[i] == "-p") || (argValues[i] == "--positives")) {
 			message = getPositivesDirMessage();
-			if ((i + 1 < numArgs) && positivesDir.empty()){
+			if ((i + 1 < numArgs) && positivesDir.empty()) {
 				positivesDir = argValues[++i];
 			} else {
 				message = getTrainUsageMessage();
