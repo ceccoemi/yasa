@@ -4,7 +4,7 @@ project(yasa VERSION 0.1 LANGUAGES CXX)
 
 enable_testing()
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 add_compile_options(-Wall -Wextra --coverage)
 
