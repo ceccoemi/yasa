@@ -67,6 +67,7 @@ TEST_F(DictionaryTest, positivesCountOfAWord) {
 	dictionary->addWord("banana", Sentiment::positive);
 	dictionary->addWord("banana", Sentiment::positive);
 	ASSERT_EQ(dictionary->positivesCount("banana"), 3);
+	ASSERT_EQ(dictionary->positivesCount("apple"), 0);
 }
 
 TEST_F(DictionaryTest, negativesCountOfAWord) {
@@ -76,4 +77,5 @@ TEST_F(DictionaryTest, negativesCountOfAWord) {
 	dictionary->addWord("banana", Sentiment::negative);
 	dictionary->addWord("banana", Sentiment::negative);
 	ASSERT_EQ(dictionary->negativesCount("banana"), 3);
+	ASSERT_EQ(dictionary->negativesCount("apple"), 0);
 }
