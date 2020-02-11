@@ -3,4 +3,4 @@
 #include <string>
 #include <vector>
 
-std::vector<std::string> tokenize(std::string text);
+std::vector<std::string> extractWords(std::string text);
