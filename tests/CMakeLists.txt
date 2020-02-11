@@ -22,6 +22,12 @@ target_link_libraries(
 )
 gtest_discover_tests(dictionaryTest DictionaryTest.cc)
 
+add_executable(fileProcessingTest fileProcessingTest.cc)
+target_link_libraries(
+	fileProcessingTest ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
+)
+gtest_discover_tests(fileProcessingTest fileProcessingTest.cc)
+
 file(GLOB sourceFiles *.cc)
 add_executable(runAllTests ${sourceFiles})
 target_link_libraries(
