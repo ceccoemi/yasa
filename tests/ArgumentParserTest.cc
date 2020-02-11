@@ -1,5 +1,6 @@
 #include <ArgumentParser.h>
 #include <gtest/gtest.h>
+#include <MainBehaviour.h>
 #include <string>
 #include <vector>
 
@@ -14,62 +15,21 @@ TEST(ArgumentParserTest, ArgumentParserConstructor) {
 	}
 }
 
-TEST(ArgumentParserTest, parseArgsExit) {
-	int numArgs { 1 };
-	const char *argValues[numArgs] = { "./yasa" };
-	ArgumentParser argumentParser(numArgs, argValues);
-	int actual = argumentParser.parseArgs();
-	int expected = 0;
-	ASSERT_EQ(actual, expected);
-}
-
 TEST(ArgumentParserTest, checkGlobalUsageMessage) {
-	int numArgs { 1 };
-	const char *argValues[numArgs] = { "./yasa" };
-	ArgumentParser argumentParser(numArgs, argValues);
-	argumentParser.parseArgs();
-	std::string expected = argumentParser.getGlobalUsageMessage();
+	std::string expected = ArgumentParser::globalUsageMessage;
 	std::string actual { "Usage Message." };
 	ASSERT_EQ(actual, expected);
 }
 
 TEST(ArgumentParserTest, checkTrainUsageMessage) {
-	int numArgs { 2 };
-	const char *argValues[numArgs] = { "./yasa", "train" };
-	ArgumentParser argumentParser(numArgs, argValues);
-	argumentParser.parseArgs();
-	std::string expected = argumentParser.getTrainUsageMessage();
+	std::string expected = ArgumentParser::trainUsageMessage;
 	std::string actual { "Train Usage Message." };
 	ASSERT_EQ(actual, expected);
 }
 
 TEST(ArgumentParserTest, checkClassifyUsageMessage) {
-	int numArgs { 2 };
-	const char *argValues[numArgs] = { "./yasa", "classify" };
-	ArgumentParser argumentParser(numArgs, argValues);
-	argumentParser.parseArgs();
-	std::string expected = argumentParser.getClassifyUsageMessage();
+	std::string expected = ArgumentParser::classifyUsageMessage;
 	std::string actual { "Classify Usage Message." };
-	ASSERT_EQ(actual, expected);
-}
-
-TEST(ArgumentParserTest, checkPositivesDirMessage) {
-	int numArgs { 4 };
-	const char *argValues[numArgs] = { "./yasa", "train", "-p", "aDir" };
-	ArgumentParser argumentParser(numArgs, argValues);
-	argumentParser.parseArgs();
-	std::string expected = argumentParser.getPositivesDirMessage();
-	std::string actual { "PositivesDir Message." };
-	ASSERT_EQ(actual, expected);
-}
-
-TEST(ArgumentParserTest, checkNegativesDirMessage) {
-	int numArgs { 4 };
-	const char *argValues[numArgs] = { "./yasa", "train", "-n", "aDir" };
-	ArgumentParser argumentParser(numArgs, argValues);
-	argumentParser.parseArgs();
-	std::string expected = argumentParser.getNegativesDirMessage();
-	std::string actual { "NegativesDir Message." };
 	ASSERT_EQ(actual, expected);
 }
 
@@ -79,7 +39,7 @@ TEST(ArgumentParserTest, showUsageWithNoArgs) {
 	ArgumentParser argumentParser(numArgs, argValues);
 	argumentParser.parseArgs();
 	std::string actual = argumentParser.getMessage();
-	std::string expected = argumentParser.getGlobalUsageMessage();
+	std::string expected = argumentParser.globalUsageMessage;
 	ASSERT_EQ(actual, expected);
 }
 
@@ -89,7 +49,7 @@ TEST(ArgumentParserTest, showUsageWithFirstArgumentWrong) {
 	ArgumentParser argumentParser(numArgs, argValues);
 	argumentParser.parseArgs();
 	std::string actual = argumentParser.getMessage();
-	std::string expected = argumentParser.getGlobalUsageMessage();
+	std::string expected = argumentParser.globalUsageMessage;
 	ASSERT_EQ(actual, expected);
 }
 
@@ -99,7 +59,7 @@ TEST(ArgumentParserTest, checkFirstArgumentWhenItIsHelp) {
 	ArgumentParser argumentParser(numArgs, argValues);
 	argumentParser.parseArgs();
 	std::string actual = argumentParser.getMessage();
-	std::string expected = argumentParser.getGlobalUsageMessage();
+	std::string expected = argumentParser.globalUsageMessage;
 	ASSERT_EQ(actual, expected);
 }
 
@@ -109,7 +69,7 @@ TEST(ArgumentParserTest, checkFirstArgumentWhenItIsTrain) {
 	ArgumentParser argumentParser(numArgs, argValues);
 	argumentParser.parseArgs();
 	std::string actual = argumentParser.getMessage();
-	std::string expected = argumentParser.getTrainUsageMessage();
+	std::string expected = argumentParser.trainUsageMessage;
 	ASSERT_EQ(actual, expected);
 }
 
@@ -119,7 +79,7 @@ TEST(ArgumentParserTest, checkFirstArgumentWhenItIsClassify) {
 	ArgumentParser argumentParser(numArgs, argValues);
 	argumentParser.parseArgs();
 	std::string actual = argumentParser.getMessage();
-	std::string expected = argumentParser.getClassifyUsageMessage();
+	std::string expected = argumentParser.classifyUsageMessage;
 	ASSERT_EQ(actual, expected);
 }
 
@@ -129,7 +89,7 @@ TEST(ArgumentParserTest, checkPositivesArgumentAfterTrain) {
 	ArgumentParser argumentParser(numArgs, argValues);
 	argumentParser.parseArgs();
 	std::string actual = argumentParser.getMessage();
-	std::string expected = argumentParser.getTrainUsageMessage();
+	std::string expected = argumentParser.trainUsageMessage;
 	ASSERT_EQ(actual, expected);
 }
 
@@ -139,7 +99,7 @@ TEST(ArgumentParserTest, checkNegativesArgumentAfterTrain) {
 	ArgumentParser argumentParser(numArgs, argValues);
 	argumentParser.parseArgs();
 	std::string actual = argumentParser.getMessage();
-	std::string expected = argumentParser.getTrainUsageMessage();
+	std::string expected = argumentParser.trainUsageMessage;
 	ASSERT_EQ(actual, expected);
 }
 
@@ -149,27 +109,7 @@ TEST(ArgumentParserTest, checkFirstArgumentAfterClassify) {
 	ArgumentParser argumentParser(numArgs, argValues);
 	argumentParser.parseArgs();
 	std::string actual = argumentParser.getMessage();
-	std::string expected = argumentParser.getClassifyUsageMessage();
-	ASSERT_EQ(actual, expected);
-}
-
-TEST(ArgumentParserTest, getPositivesDirMessage) {
-	int numArgs { 4 };
-	const char *argValues[numArgs] = { "./yasa", "train", "-p", "aDir" };
-	ArgumentParser argumentParser(numArgs, argValues);
-	argumentParser.parseArgs();
-	std::string actual = argumentParser.getMessage();
-	std::string expected = argumentParser.getPositivesDirMessage();
-	ASSERT_EQ(actual, expected);
-}
-
-TEST(ArgumentParserTest, getNegativesDirMessage) {
-	int numArgs { 4 };
-	const char *argValues[numArgs] = { "./yasa", "train", "-n", "aDir" };
-	ArgumentParser argumentParser(numArgs, argValues);
-	argumentParser.parseArgs();
-	std::string actual = argumentParser.getMessage();
-	std::string expected = argumentParser.getNegativesDirMessage();
+	std::string expected = argumentParser.classifyUsageMessage;
 	ASSERT_EQ(actual, expected);
 }
 
@@ -182,6 +122,9 @@ TEST(ArgumentParserTest, getPositivesDir) {
 	std::string actual = argumentParser.getPositivesDir();
 	std::string expected { "aPositivesDir" };
 	ASSERT_EQ(actual, expected);
+	MainBehaviour actualBehaviour = argumentParser.getMainBehaviour();
+	MainBehaviour expectedBehaviour = MainBehaviour::trainPositives;
+	ASSERT_EQ(actualBehaviour, expectedBehaviour);
 }
 
 TEST(ArgumentParserTest, getNegativesDir) {
@@ -193,6 +136,9 @@ TEST(ArgumentParserTest, getNegativesDir) {
 	std::string actual = argumentParser.getNegativesDir();
 	std::string expected { "aNegativesDir" };
 	ASSERT_EQ(actual, expected);
+	MainBehaviour actualBehaviour = argumentParser.getMainBehaviour();
+	MainBehaviour expectedBehaviour = MainBehaviour::trainNegatives;
+	ASSERT_EQ(actualBehaviour, expectedBehaviour);
 }
 
 TEST(ArgumentParserTest, getPositivesDirAndNegativesDir) {
@@ -207,34 +153,26 @@ TEST(ArgumentParserTest, getPositivesDirAndNegativesDir) {
 	std::string actualNeg = argumentParser.getNegativesDir();
 	std::string expectedNeg { "aNegativesDir" };
 	ASSERT_EQ(actualNeg, expectedNeg);
+	MainBehaviour actualBehaviour = argumentParser.getMainBehaviour();
+	MainBehaviour expectedBehaviour = MainBehaviour::trainPositivesAndNegatives;
+	ASSERT_EQ(actualBehaviour, expectedBehaviour);
 }
 
-TEST(ArgumentParserTest, getPositivesDirAndPositivesDir) {
-	int numArgs { 6 };
-	const char *argValues[numArgs] = { "./yasa", "train", "-p", "aPositivesDir",
-			"-p", "anotherPositivesDir" };
-	ArgumentParser argumentParser(numArgs, argValues);
-	argumentParser.parseArgs();
-	std::string actualPos1 = argumentParser.getPositivesDir();
-	std::string expectedPos1 { "aPositivesDir" };
-	ASSERT_EQ(actualPos1, expectedPos1);
-	std::string actualPos2 = argumentParser.getPositivesDir();
-	std::string expectedPos2 { "aPositivesDir" };
-	ASSERT_EQ(actualPos2, expectedPos2);
-}
-
-TEST(ArgumentParserTest, getNegativesDirAndNegativesDir) {
+TEST(ArgumentParserTest, getNegativesDirAndPositivesDir) {
 	int numArgs { 6 };
 	const char *argValues[numArgs] = { "./yasa", "train", "-n", "aNegativesDir",
-			"-n", "anotherNegativesDir" };
+			"-p", "aPositivesDir" };
 	ArgumentParser argumentParser(numArgs, argValues);
 	argumentParser.parseArgs();
-	std::string actualNeg1 = argumentParser.getNegativesDir();
-	std::string expectedNeg1 { "aNegativesDir" };
-	ASSERT_EQ(actualNeg1, expectedNeg1);
-	std::string actualNeg2 = argumentParser.getNegativesDir();
-	std::string expectedNeg2 { "aNegativesDir" };
-	ASSERT_EQ(actualNeg2, expectedNeg2);
+	std::string actualPos = argumentParser.getPositivesDir();
+	std::string expectedPos { "aPositivesDir" };
+	ASSERT_EQ(actualPos, expectedPos);
+	std::string actualNeg = argumentParser.getNegativesDir();
+	std::string expectedNeg { "aNegativesDir" };
+	ASSERT_EQ(actualNeg, expectedNeg);
+	MainBehaviour actualBehaviour = argumentParser.getMainBehaviour();
+	MainBehaviour expectedBehaviour = MainBehaviour::trainPositivesAndNegatives;
+	ASSERT_EQ(actualBehaviour, expectedBehaviour);
 }
 
 TEST(ArgumentParserTest, getFileToClassify) {
@@ -246,15 +184,74 @@ TEST(ArgumentParserTest, getFileToClassify) {
 	std::string actual = argumentParser.getFileToClassify();
 	std::string expected { "aFileToClassify" };
 	ASSERT_EQ(actual, expected);
+	MainBehaviour actualBehaviour = argumentParser.getMainBehaviour();
+	MainBehaviour expectedBehaviour = MainBehaviour::classify;
+	ASSERT_EQ(actualBehaviour, expectedBehaviour);
 }
 
-TEST(ArgumentParserTest, getFileToClassifyMessage) {
+TEST(ArgumentParserTest, checkClassifyHelp) {
 	int numArgs { 4 };
-	const char *argValues[numArgs] = { "./yasa", "classify", "-f",
+	const char *argValues[numArgs] = { "./yasa", "classify", "-h",
 			"aFileToClassify" };
 	ArgumentParser argumentParser(numArgs, argValues);
 	argumentParser.parseArgs();
 	std::string actual = argumentParser.getMessage();
-	std::string expected { "FileToClassify Message." };
+	std::string expected { "Classify Usage Message." };
+	ASSERT_EQ(actual, expected);
+	MainBehaviour actualBehaviour = argumentParser.getMainBehaviour();
+	MainBehaviour expectedBehaviour = MainBehaviour::displayMessage;
+	ASSERT_EQ(actualBehaviour, expectedBehaviour);
+}
+
+TEST(ArgumentParserTest, mainDisplayMessage) {
+	int numArgs { 1 };
+	const char *argValues[numArgs] = { "./yasa" };
+	ArgumentParser argumentParser(numArgs, argValues);
+	argumentParser.parseArgs();
+	std::string actual = argumentParser.main();
+	std::string expected = ArgumentParser::globalUsageMessage;
+	ASSERT_EQ(actual, expected);
+}
+
+TEST(ArgumentParserTest, mainTrainPositives) {
+	int numArgs { 4 };
+	const char *argValues[numArgs] = { "./yasa", "train", "-p", "positivesDir" };
+	ArgumentParser argumentParser(numArgs, argValues);
+	argumentParser.parseArgs();
+	std::string actual = argumentParser.main();
+	std::string expected = "Training done on given positive examples.";
+	ASSERT_EQ(actual, expected);
+}
+
+TEST(ArgumentParserTest, mainTrainNegatives) {
+	int numArgs { 4 };
+	const char *argValues[numArgs] = { "./yasa", "train", "-n", "negativesDir" };
+	ArgumentParser argumentParser(numArgs, argValues);
+	argumentParser.parseArgs();
+	std::string actual = argumentParser.main();
+	std::string expected = "Training done on given negative examples.";
+	ASSERT_EQ(actual, expected);
+}
+
+TEST(ArgumentParserTest, mainTrainPositivesAndNegatives) {
+	int numArgs { 6 };
+	const char *argValues[numArgs] = { "./yasa", "train", "-p", "aPositivesDir",
+			"-n", "aNegativesDir" };
+	ArgumentParser argumentParser(numArgs, argValues);
+	argumentParser.parseArgs();
+	std::string actual = argumentParser.main();
+	std::string expected =
+			"Training done on given positive and negative examples.";
+	ASSERT_EQ(actual, expected);
+}
+
+TEST(ArgumentParserTest, mainClassify) {
+	int numArgs { 4 };
+	const char *argValues[numArgs] = { "./yasa", "classify", "-f",
+			"fileToClassify" };
+	ArgumentParser argumentParser(numArgs, argValues);
+	argumentParser.parseArgs();
+	std::string actual = argumentParser.main();
+	std::string expected = "Result: fake";
 	ASSERT_EQ(actual, expected);
 }

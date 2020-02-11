@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "MainBehaviour.h"
+
 class ArgumentParser {
 public:
 	ArgumentParser(int argc, const char *argv[]);
@@ -11,16 +13,12 @@ public:
 	std::string getPositivesDir();
 	std::string getNegativesDir();
 	std::string getFileToClassify();
-	static std::string getGlobalUsageMessage();
-	static std::string getTrainUsageMessage();
-	static std::string getClassifyUsageMessage();
-	static std::string getPositivesDirMessage();
-	static std::string getNegativesDirMessage();
-	static std::string getFileToClassifyMessage();
-	void handleFirstArgument();
-	void handleTrainArguments();
-	void handleClassifyArgument();
-	int parseArgs();
+	MainBehaviour getMainBehaviour();
+	static std::string globalUsageMessage;
+	static std::string trainUsageMessage;
+	static std::string classifyUsageMessage;
+	void parseArgs();
+	std::string main();
 private:
 	int numArgs;
 	std::vector<std::string> argValues;
@@ -28,4 +26,9 @@ private:
 	std::string positivesDir;
 	std::string negativesDir;
 	std::string fileToClassify;
+	MainBehaviour mainBehaviour;
+
+	void handleFirstArgument();
+	void handleTrainArguments();
+	void handleClassifyArgument();
 };
