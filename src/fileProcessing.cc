@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <cctype>
+#include <fstream>
 #include <iterator>
+#include <sstream>
 
 static const std::vector<std::string> stopwords { "a", "about", "above",
 		"above", "across", "after", "afterwards", "again", "against", "all",
@@ -67,5 +69,11 @@ std::vector<std::string> extractWords(std::string text) {
 		first = last;
 	}
 	return words;
+}
 
+std::string extractText(std::string filePath) {
+	std::ifstream ifs(filePath);
+	std::stringstream buffer;
+	buffer << ifs.rdbuf();
+	return buffer.str();
 }

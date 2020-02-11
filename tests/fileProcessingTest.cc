@@ -30,3 +30,9 @@ TEST(fileProcessingTest, extractWordsWithPunctuation) {
 	ASSERT_EQ(actual, expected);
 }
 
+TEST(fileProcessingTest, extractTextFromFile) {
+	std::string actual = extractText("./resources/test.txt");
+	std::string expected = "THIS IS A LINE\nTHIS IS ANOTHER LINE";
+	ASSERT_EQ(actual, expected);
+}
+

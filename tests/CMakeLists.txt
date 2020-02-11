@@ -1,5 +1,7 @@
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
+FILE(COPY resources DESTINATION "${CMAKE_BINARY_DIR}")
+
 find_package(GTest REQUIRED)  # import GTEST_BOTH_LIBRARIES
 
 set(TEST_LIB yasalib pthread gcov)
