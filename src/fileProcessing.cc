@@ -1,0 +1,79 @@
+#include "fileProcessing.h"
+
+#include <algorithm>
+#include <cctype>
+#include <fstream>
+#include <iterator>
+#include <sstream>
+
+static const std::vector<std::string> stopwords { "a", "about", "above",
+		"above", "across", "after", "afterwards", "again", "against", "all",
+		"almost", "alone", "along", "already", "also", "although", "always",
+		"am", "among", "amongst", "amoungst", "amount", "an", "and", "another",
+		"any", "anyhow", "anyone", "anything", "anyway", "anywhere", "are",
+		"around", "as", "at", "back", "be", "became", "because", "become",
+		"becomes", "becoming", "been", "before", "beforehand", "behind",
+		"being", "below", "beside", "besides", "between", "beyond", "bill",
+		"both", "bottom", "but", "by", "call", "can", "cannot", "cant", "co",
+		"con", "could", "couldnt", "cry", "de", "describe", "detail", "do",
+		"done", "down", "due", "during", "each", "eg", "eight", "either",
+		"eleven", "else", "elsewhere", "empty", "enough", "etc", "even", "ever",
+		"every", "everyone", "everything", "everywhere", "except", "few",
+		"fifteen", "fify", "fill", "find", "fire", "first", "five", "for",
+		"former", "formerly", "forty", "found", "four", "from", "front", "full",
+		"further", "get", "give", "go", "had", "has", "hasnt", "have", "he",
+		"hence", "her", "here", "hereafter", "hereby", "herein", "hereupon",
+		"hers", "herself", "him", "himself", "his", "how", "however", "hundred",
+		"ie", "if", "in", "inc", "indeed", "interest", "into", "is", "it",
+		"its", "itself", "keep", "last", "latter", "latterly", "least", "less",
+		"ltd", "made", "many", "may", "me", "meanwhile", "might", "mill",
+		"mine", "more", "moreover", "most", "mostly", "move", "much", "must",
+		"my", "myself", "name", "namely", "neither", "never", "nevertheless",
+		"next", "nine", "no", "nobody", "none", "noone", "nor", "not",
+		"nothing", "now", "nowhere", "of", "off", "often", "on", "once", "one",
+		"only", "onto", "or", "other", "others", "otherwise", "our", "ours",
+		"ourselves", "out", "over", "own", "part", "per", "perhaps", "please",
+		"put", "rather", "re", "same", "see", "seem", "seemed", "seeming",
+		"seems", "serious", "several", "she", "should", "show", "side", "since",
+		"sincere", "six", "sixty", "so", "some", "somehow", "someone",
+		"something", "sometime", "sometimes", "somewhere", "still", "such",
+		"system", "take", "ten", "than", "that", "the", "their", "them",
+		"themselves", "then", "thence", "there", "thereafter", "thereby",
+		"therefore", "therein", "thereupon", "these", "they", "thick", "thin",
+		"third", "this", "those", "though", "three", "through", "throughout",
+		"thru", "thus", "to", "together", "too", "top", "toward", "towards",
+		"twelve", "twenty", "two", "un", "under", "until", "up", "upon", "us",
+		"very", "via", "was", "we", "well", "were", "what", "whatever", "when",
+		"whence", "whenever", "where", "whereafter", "whereas", "whereby",
+		"wherein", "whereupon", "wherever", "whether", "which", "while",
+		"whither", "who", "whoever", "whole", "whom", "whose", "why", "will",
+		"with", "within", "without", "would", "yet", "you", "your", "yours",
+		"yourself", "yourselves", "the" };
+
+bool isWord(std::string word) {
+	return word.size() > 0
+			&& std::find(stopwords.begin(), stopwords.end(), word)
+					== stopwords.end();
+}
+
+std::vector<std::string> extractWords(std::string text) {
+	std::vector<std::string> words;
+	auto first = text.begin();
+	while (first != text.end()) {
+		first = std::find_if(first, text.end(), ::isalnum);
+		auto last = std::find_if_not(first, text.end(), ::isalnum);
+		std::string word(first, last);
+		if (isWord(word)) {
+			words.push_back(word);
+		}
+		first = last;
+	}
+	return words;
+}
+
+std::string extractText(std::string filePath) {
+	std::ifstream ifs(filePath);
+	std::stringstream buffer;
+	buffer << ifs.rdbuf();
+	return buffer.str();
+}
