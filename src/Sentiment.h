@@ -1,5 +1,3 @@
 #pragma once
 
-enum Sentiment {
-	negative, positive
-};
+enum Sentiment { negative, positive };

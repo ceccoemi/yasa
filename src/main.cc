@@ -3,6 +3,6 @@
 #define VERSION 0.1
 
 int main() {
-	std::cout << "yasa " << VERSION << '\n';
-	return 0;
+  std::cout << "yasa " << VERSION << '\n';
+  return 0;
 }
