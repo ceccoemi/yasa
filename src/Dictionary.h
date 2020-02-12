@@ -6,26 +6,26 @@
 #include "SqliteYasa.h"
 
 class Dictionary {
-public:
-	static Dictionary* getInstance();
+ public:
+  static Dictionary* getInstance();
 
-	void addWord(std::string word, Sentiment sentiment);
+  void addWord(std::string word, Sentiment sentiment);
 
-	int size();
+  int size();
 
-	void reset();
+  void reset();
 
-	int positivesCount();
+  int positivesCount();
 
-	int positivesCount(std::string word);
+  int positivesCount(std::string word);
 
-	int negativesCount();
+  int negativesCount();
 
-	int negativesCount(std::string word);
+  int negativesCount(std::string word);
 
-private:
-	Dictionary();
+ private:
+  Dictionary();
 
-	static Dictionary *instance;
-	SqliteYasa db;
+  static Dictionary* instance;
+  SqliteYasa db;
 };
