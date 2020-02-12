@@ -2,4 +2,4 @@
 
 #include <string>
 
-void train(std::string negativesDir, std::string positivesDir);
+void train(const std::string& negativesDir, const std::string& positivesDir);
