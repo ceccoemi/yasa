@@ -2,9 +2,7 @@
 
 ArgumentParser::ArgumentParser(int argc, const char *argv[])
     : numArgs{argc}, mainBehaviour{displayMessage} {
-  for (int i = 0; i < numArgs; ++i) {
-    argValues.push_back(argv[i]);
-  }
+  argValues = std::vector<std::string>(argv, argv + argc);
 }
 
 const std::string ArgumentParser::globalUsageMessage = "Usage Message.";
@@ -13,9 +11,7 @@ const std::string ArgumentParser::classifyUsageMessage =
     "Classify Usage Message.";
 
 void ArgumentParser::handleTrainArguments() {
-  if ((numArgs > 2) && ((argValues[2] == "-h") || (argValues[2] == "--help"))) {
-    ;
-  } else if (numArgs == 4) {
+  if (numArgs == 4) {
     if (argValues[2] == "-p" || argValues[2] == "--positives") {
       positivesDir = argValues[3];
       mainBehaviour = MainBehaviour::train;
@@ -39,15 +35,9 @@ void ArgumentParser::handleTrainArguments() {
 }
 
 void ArgumentParser::handleClassifyArgument() {
-  if (numArgs > 2) {
-    if ((argValues[2] == "-h") || (argValues[2] == "--help")) {
-      ;
-    } else if ((argValues[2] == "-f") || (argValues[2] == "--file")) {
-      if (numArgs > 3) {
-        fileToClassify = argValues[3];
-        mainBehaviour = MainBehaviour::classify;
-      }
-    }
+  if ((numArgs > 3) && ((argValues[2] == "-f") || (argValues[2] == "--file"))) {
+    fileToClassify = argValues[3];
+    mainBehaviour = MainBehaviour::classify;
   }
 }
 
