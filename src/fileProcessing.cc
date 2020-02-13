@@ -72,9 +72,20 @@ static const std::vector<std::string> stopwords{
     "without",   "would",        "yet",        "you",        "your",
     "yours",     "yourself",     "yourselves", "the"};
 
+namespace {
+
 bool isWord(std::string word) {
   return word.size() > 0 &&
          std::find(stopwords.begin(), stopwords.end(), word) == stopwords.end();
+}
+
+}  // namespace
+
+std::string extractText(std::string filePath) {
+  std::ifstream ifs(filePath);
+  std::stringstream buffer;
+  buffer << ifs.rdbuf();
+  return buffer.str();
 }
 
 std::vector<std::string> extractWords(std::string text) {
@@ -90,11 +101,4 @@ std::vector<std::string> extractWords(std::string text) {
     first = last;
   }
   return words;
-}
-
-std::string extractText(std::string filePath) {
-  std::ifstream ifs(filePath);
-  std::stringstream buffer;
-  buffer << ifs.rdbuf();
-  return buffer.str();
 }

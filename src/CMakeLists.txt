@@ -5,6 +5,7 @@ add_library(yasalib ${headerFiles} ${sourceFiles})
 target_link_libraries(yasalib
 	PRIVATE gcov
 	PRIVATE sqlite3
+	PRIVATE stdc++fs  # for std::experimental::filesystem
 )
 
 add_executable(yasa main.cc)
