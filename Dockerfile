@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 RUN apt-get update --fix-missing
 
-RUN apt-get install -y g++ cmake libgtest-dev lcov libsqlite3-dev
+RUN apt-get install -y g++ cmake libgtest-dev lcov libsqlite3-dev clang-tidy-9
 
 ### Compile and install Google Test ###
 RUN cd /usr/src/gtest && \
@@ -14,7 +14,9 @@ WORKDIR /usr/local/src/yasa
 COPY . .
 RUN mkdir build && \
     cd build && \
-    cmake -j$(nproc) .. && \
+    cmake -j$(nproc) -DCMAKE_EXPORT_COMPILE_COMMANDS=ON /usr/lib/llvm-9/ .. && \
+    ln -s $PWD/compile_commands.json /usr/lib/llvm-9/ && \
+    clang-tidy-9 ../src/*.cc -checks=* -header-filter=.* && \
     make -j$(nproc) && \
     tests/runAllTests && \
     src/yasa && \
