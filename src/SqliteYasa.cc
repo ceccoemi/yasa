@@ -20,14 +20,6 @@ SqliteYasa::SqliteYasa(std::string dbName) {
   sqlite3_close(db);
 }
 
-std::string SqliteYasa::getDbPath() {
-  // TODO smarter way to determine pathSize
-  size_t pathSize = 100 + dbName.size();
-  char cwd[pathSize];
-  getcwd(cwd, pathSize);
-  return std::string(cwd) + "/" + dbName;
-}
-
 static int storeQueryResult(void *output, int argc, char **argv,
                             char **colName) {
   SqliteYasa::QueryResult *result =

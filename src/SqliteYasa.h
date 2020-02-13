@@ -8,8 +8,6 @@ class SqliteYasa {
  public:
   SqliteYasa(std::string dbName);
 
-  std::string getDbPath();
-
   // TODO find a better data structure (map is not cache friendly)
   typedef std::map<std::string, std::vector<std::string>> QueryResult;
 
