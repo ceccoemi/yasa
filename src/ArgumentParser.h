@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "version.h"
+
 class ArgumentParser {
  public:
   ArgumentParser(int argc, const char *argv[]);
@@ -19,6 +21,7 @@ class ArgumentParser {
   std::string positivesDir;
   std::string negativesDir;
   std::string fileToClassify;
+
   enum MainBehaviour { train, classify, displayMessage };
   MainBehaviour mainBehaviour;
 

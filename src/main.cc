@@ -1,8 +1,12 @@
 #include <iostream>
+#include <string>
 
-#define VERSION 0.1
+#include "ArgumentParser.h"
 
-int main() {
-	std::cout << "yasa " << VERSION << '\n';
-	return 0;
+int main(int argc, const char *argv[]) {
+  ArgumentParser argumentParser(argc, argv);
+  argumentParser.parseArgs();
+  std::cout << argumentParser.main() << std::endl;
+
+  return 0;
 }

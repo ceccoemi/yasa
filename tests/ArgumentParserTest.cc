@@ -1,5 +1,6 @@
 #include <ArgumentParser.h>
 #include <gtest/gtest.h>
+#include <version.h>
 
 #include <string>
 
@@ -162,5 +163,15 @@ TEST(ArgumentParserTest, checkClassifyHelp) {
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::classifyUsageMessage;
+  ASSERT_EQ(actual, expected);
+}
+
+TEST(ArgumentParserTest, checkVersion) {
+  int numArgs{2};
+  const char *argValues[numArgs] = {"./yasa", "-v"};
+  ArgumentParser argumentParser(numArgs, argValues);
+  argumentParser.parseArgs();
+  std::string actual = argumentParser.main();
+  std::string expected = "yasa version " + std::string(VERSION);
   ASSERT_EQ(actual, expected);
 }

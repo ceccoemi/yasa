@@ -54,6 +54,8 @@ void ArgumentParser::handleClassifyArgument() {
 void ArgumentParser::handleFirstArgument() {
   if ((argValues[1] == "-h") || argValues[1] == "--help") {
     message = globalUsageMessage;
+  } else if ((argValues[1] == "-v") || (argValues[1] == "--version")) {
+    message = "yasa version " + std::string(VERSION);
   } else if (argValues[1] == "train") {
     message = trainUsageMessage;
     handleTrainArguments();
@@ -66,7 +68,6 @@ void ArgumentParser::handleFirstArgument() {
 }
 
 void ArgumentParser::parseArgs() {
-  mainBehaviour = MainBehaviour::displayMessage;
   if (numArgs < 2) {
     message = globalUsageMessage;
   } else {
