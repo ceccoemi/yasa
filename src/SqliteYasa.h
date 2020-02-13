@@ -6,7 +6,7 @@
 
 class SqliteYasa {
  public:
-  SqliteYasa(const std::string& dbName);
+  explicit SqliteYasa(const std::string& dbName);
 
   // TODO find a better data structure (map is not cache friendly)
   using QueryResult = std::map<std::string, std::vector<std::string>>;

@@ -1,14 +1,13 @@
 #include "SqliteYasa.h"
 
 #include <sqlite3.h>
-#include <stddef.h>
-#include <unistd.h>
+
 #include <stdexcept>
 
 sqlite3 *openDb(const char *dbName) {
   sqlite3 *db;
   int rst = sqlite3_open(dbName, &db);
-  if (rst) {
+  if (rst != SQLITE_OK) {
     throw std::runtime_error(sqlite3_errmsg(db));
   }
   return db;
@@ -22,8 +21,7 @@ SqliteYasa::SqliteYasa(const std::string &dbName) {
 
 static int storeQueryResult(void *output, int argc, char **argv,
                             char **colName) {
-  SqliteYasa::QueryResult *result =
-      static_cast<SqliteYasa::QueryResult *>(output);
+  auto *result = static_cast<SqliteYasa::QueryResult *>(output);
   for (int i = 0; i < argc; i++) {
     result->operator[](colName[i]).push_back(argv[i]);
   }

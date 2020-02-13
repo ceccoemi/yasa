@@ -6,7 +6,7 @@
 #include <iterator>
 #include <sstream>
 
-constexpr std::vector<std::string> stopwords{
+const std::vector<std::string> stopwords{
     "a",         "about",        "above",      "above",      "across",
     "after",     "afterwards",   "again",      "against",    "all",
     "almost",    "alone",        "along",      "already",    "also",

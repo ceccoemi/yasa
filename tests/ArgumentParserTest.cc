@@ -94,9 +94,31 @@ TEST(ArgumentParserTest, mainTrainPositives) {
   ASSERT_EQ(actual, expected);
 }
 
+TEST(ArgumentParserTest, mainTrainPositivesExtended) {
+  int numArgs{4};
+  const char *argValues[numArgs] = {"./yasa", "train", "--positives",
+                                    "aPositivesDir"};
+  ArgumentParser argumentParser(numArgs, argValues);
+  argumentParser.parseArgs();
+  std::string actual = argumentParser.main();
+  std::string expected{"Training."};
+  ASSERT_EQ(actual, expected);
+}
+
 TEST(ArgumentParserTest, mainTrainNegatives) {
   int numArgs{4};
   const char *argValues[numArgs] = {"./yasa", "train", "-n", "aNegativesDir"};
+  ArgumentParser argumentParser(numArgs, argValues);
+  argumentParser.parseArgs();
+  std::string actual = argumentParser.main();
+  std::string expected{"Training."};
+  ASSERT_EQ(actual, expected);
+}
+
+TEST(ArgumentParserTest, mainTrainNegativesExtended) {
+  int numArgs{4};
+  const char *argValues[numArgs] = {"./yasa", "train", "--negatives",
+                                    "aNegativesDir"};
   ArgumentParser argumentParser(numArgs, argValues);
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
@@ -108,6 +130,18 @@ TEST(ArgumentParserTest, mainTrainPositivesAndNegatives) {
   int numArgs{6};
   const char *argValues[numArgs] = {"./yasa",        "train", "-p",
                                     "aPositivesDir", "-n",    "aNegativesDir"};
+  ArgumentParser argumentParser(numArgs, argValues);
+  argumentParser.parseArgs();
+  std::string actual = argumentParser.main();
+  std::string expected{"Training."};
+  ASSERT_EQ(actual, expected);
+}
+
+TEST(ArgumentParserTest, mainTrainPositivesAndNegativesExtended) {
+  int numArgs{6};
+  const char *argValues[numArgs] = {"./yasa",      "train",
+                                    "--positives", "aPositivesDir",
+                                    "--negatives", "aNegativesDir"};
   ArgumentParser argumentParser(numArgs, argValues);
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
