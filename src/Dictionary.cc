@@ -16,7 +16,7 @@ Dictionary* Dictionary::getInstance() {
   return instance;
 }
 
-void Dictionary::addWord(std::string word, Sentiment sentiment) {
+void Dictionary::addWord(const std::string& word, Sentiment sentiment) {
   std::string table =
       sentiment == Sentiment::positive ? "positives" : "negatives";
   db.query("INSERT INTO " + table + "(word) VALUES('" + word + "');");
@@ -37,7 +37,7 @@ int Dictionary::positivesCount() {
   return std::stoi(queryResult["positives_count"].front());
 }
 
-int Dictionary::positivesCount(std::string word) {
+int Dictionary::positivesCount(const std::string& word) {
   SqliteYasa::QueryResult queryResult = db.query(
       "SELECT COUNT(*) AS positives_count FROM positives "
       "WHERE word = '" +
@@ -51,7 +51,7 @@ int Dictionary::negativesCount() {
   return std::stoi(queryResult["negatives_count"].front());
 }
 
-int Dictionary::negativesCount(std::string word) {
+int Dictionary::negativesCount(const std::string& word) {
   SqliteYasa::QueryResult queryResult = db.query(
       "SELECT COUNT(*) AS negatives_count FROM negatives "
       "WHERE word = '" +

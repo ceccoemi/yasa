@@ -16,7 +16,7 @@ RUN mkdir build && \
     cd build && \
     cmake -j$(nproc) -DCMAKE_EXPORT_COMPILE_COMMANDS=ON /usr/lib/llvm-9/ .. && \
     ln -s $PWD/compile_commands.json /usr/lib/llvm-9/ && \
-    clang-tidy-9 ../src/*.cc -checks=* -header-filter=.* && \
+    clang-tidy-9 ../src/*.cc -checks=*,-fuchsia-default-arguments-calls,-modernize-use-trailing-return-type,-llvm-header-guard -header-filter=.* && \
     make -j$(nproc) && \
     tests/runAllTests && \
     src/yasa && \

@@ -14,7 +14,7 @@ sqlite3 *openDb(const char *dbName) {
   return db;
 }
 
-SqliteYasa::SqliteYasa(std::string dbName) {
+SqliteYasa::SqliteYasa(const std::string &dbName) {
   this->dbName = dbName;
   sqlite3 *db = openDb(this->dbName.c_str());
   sqlite3_close(db);
@@ -30,7 +30,7 @@ static int storeQueryResult(void *output, int argc, char **argv,
   return 0;
 }
 
-SqliteYasa::QueryResult SqliteYasa::query(std::string sqlQuery) {
+SqliteYasa::QueryResult SqliteYasa::query(const std::string &sqlQuery) {
   sqlite3 *db = openDb(dbName.c_str());
   SqliteYasa::QueryResult queryResult;
   char *errorMessage;

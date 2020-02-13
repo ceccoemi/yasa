@@ -6,12 +6,12 @@
 
 class SqliteYasa {
  public:
-  SqliteYasa(std::string dbName);
+  SqliteYasa(const std::string& dbName);
 
   // TODO find a better data structure (map is not cache friendly)
-  typedef std::map<std::string, std::vector<std::string>> QueryResult;
+  using QueryResult = std::map<std::string, std::vector<std::string>>;
 
-  QueryResult query(std::string sqlQuery);
+  QueryResult query(const std::string& sqlQuery);
 
  private:
   std::string dbName;

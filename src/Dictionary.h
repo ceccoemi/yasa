@@ -9,7 +9,7 @@ class Dictionary {
  public:
   static Dictionary* getInstance();
 
-  void addWord(std::string word, Sentiment sentiment);
+  void addWord(const std::string& word, Sentiment sentiment);
 
   int size();
 
@@ -17,11 +17,11 @@ class Dictionary {
 
   int positivesCount();
 
-  int positivesCount(std::string word);
+  int positivesCount(const std::string& word);
 
   int negativesCount();
 
-  int negativesCount(std::string word);
+  int negativesCount(const std::string& word);
 
  private:
   Dictionary();

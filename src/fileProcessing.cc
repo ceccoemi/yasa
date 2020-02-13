@@ -6,7 +6,7 @@
 #include <iterator>
 #include <sstream>
 
-static const std::vector<std::string> stopwords{
+constexpr std::vector<std::string> stopwords{
     "a",         "about",        "above",      "above",      "across",
     "after",     "afterwards",   "again",      "against",    "all",
     "almost",    "alone",        "along",      "already",    "also",
@@ -74,21 +74,21 @@ static const std::vector<std::string> stopwords{
 
 namespace {
 
-bool isWord(std::string word) {
-  return word.size() > 0 &&
+bool isWord(const std::string& word) {
+  return !word.empty() &&
          std::find(stopwords.begin(), stopwords.end(), word) == stopwords.end();
 }
 
 }  // namespace
 
-std::string extractText(std::string filePath) {
+std::string extractText(const std::string& filePath) {
   std::ifstream ifs(filePath);
   std::stringstream buffer;
   buffer << ifs.rdbuf();
   return buffer.str();
 }
 
-std::vector<std::string> extractWords(std::string text) {
+std::vector<std::string> extractWords(const std::string& text) {
   std::vector<std::string> words;
   auto first = text.begin();
   while (first != text.end()) {
