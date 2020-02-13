@@ -4,24 +4,6 @@
 
 #include <string>
 
-TEST(ArgumentParserTest, checkGlobalUsageMessage) {
-  std::string expected = ArgumentParser::globalUsageMessage;
-  std::string actual{"Usage Message."};
-  ASSERT_EQ(actual, expected);
-}
-
-TEST(ArgumentParserTest, checkTrainUsageMessage) {
-  std::string expected = ArgumentParser::trainUsageMessage;
-  std::string actual{"Train Usage Message."};
-  ASSERT_EQ(actual, expected);
-}
-
-TEST(ArgumentParserTest, checkClassifyUsageMessage) {
-  std::string expected = ArgumentParser::classifyUsageMessage;
-  std::string actual{"Classify Usage Message."};
-  ASSERT_EQ(actual, expected);
-}
-
 TEST(ArgumentParserTest, showUsageWithNoArgs) {
   int numArgs{1};
   const char *argValues[numArgs] = {"./yasa"};
