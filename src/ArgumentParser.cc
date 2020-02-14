@@ -77,11 +77,12 @@ void ArgumentParser::parseArgs() {
 }
 
 std::string ArgumentParser::main() {
+  parseArgs();
   switch (mainBehaviour) {
     case MainBehaviour::train:
       return "Training.";
     case MainBehaviour::classify:
-      return "Result: fake";
+      return "Result: fake.";
     default:
       return message;
   }
