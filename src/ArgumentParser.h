@@ -9,7 +9,6 @@ class ArgumentParser {
   static const std::string globalUsageMessage;
   static const std::string trainUsageMessage;
   static const std::string classifyUsageMessage;
-  void parseArgs();
   std::string main();
 
  private:
@@ -20,10 +19,11 @@ class ArgumentParser {
   std::string negativesDir;
   std::string fileToClassify;
 
-  enum MainBehaviour { train, classify, displayMessage };
-  MainBehaviour mainBehaviour;
-
+  void parseArgs();
   void handleFirstArgument();
   void handleTrainArguments();
   void handleClassifyArgument();
+
+  enum MainBehaviour { train, classify, displayMessage };
+  MainBehaviour mainBehaviour;
 };
