@@ -1,21 +1,34 @@
 #include "ArgumentParser.h"
 
+#include "version.h"
+
 ArgumentParser::ArgumentParser(int argc, const char *argv[])
     : numArgs{argc}, mainBehaviour{displayMessage} {
   argValues = std::vector<std::string>(argv, argv + argc);
 }
 
-const std::string ArgumentParser::globalUsageMessage = "Usage Message.";
-const std::string ArgumentParser::trainUsageMessage = "Train Usage Message.";
-const std::string ArgumentParser::classifyUsageMessage =
-    "Classify Usage Message.";
+const std::string ArgumentParser::globalUsageMessage{
+    "\nUsage: yasa <command> <option(s)> <source>\n\nCommand line tool to "
+    "perform sentiment analysis written in C++ with Docker\n\nOptions:\n\t-h, "
+    "--help\t\t\tShow this help message\n\t-v, --version\t\t\tPrint version "
+    "information and quit\nCommands:\n\ttrain\t\t\t\tTrain on given"
+    "positives|negatives examples\n\tclassify\t\t\tClassify a given file\n"};
+const std::string ArgumentParser::trainUsageMessage{
+    "\nUsage: yasa train <option(s)> <source>\n\nTrain on given "
+    "positives|negatives examples\n\nOptions:\n\t-h, --help\t\t\tShow this "
+    "help message\nOptions:\n\t-p, --positives\t\t\tDirectory with positives "
+    "examples\n\t-n, --negatives\t\t\tDirectory with negatives examples"};
+const std::string ArgumentParser::classifyUsageMessage{
+    "\nUsage: yasa classify <option> <source>\n\nClassify a given "
+    "file\n\nOptions:\n\t-h, --help\t\t\tShow this help "
+    "message\nOptions:\n\t-f, --file\t\t\tFile to classify"};
 
 void ArgumentParser::handleTrainArguments() {
   if (numArgs == 4) {
-    if (argValues[2] == "-p" || argValues[2] == "--positives") {
+    if ((argValues[2] == "-p") || (argValues[2] == "--positives")) {
       positivesDir = argValues[3];
       mainBehaviour = MainBehaviour::train;
-    } else if (argValues[2] == "-n" || argValues[2] == "--negatives") {
+    } else if ((argValues[2] == "-n") || (argValues[2] == "--negatives")) {
       negativesDir = argValues[3];
       mainBehaviour = MainBehaviour::train;
     }
@@ -42,9 +55,7 @@ void ArgumentParser::handleClassifyArgument() {
 }
 
 void ArgumentParser::handleFirstArgument() {
-  if ((argValues[1] == "-h") || argValues[1] == "--help") {
-    message = globalUsageMessage;
-  } else if ((argValues[1] == "-v") || (argValues[1] == "--version")) {
+  if ((argValues[1] == "-v") || (argValues[1] == "--version")) {
     message = "yasa version " + std::string(VERSION);
   } else if (argValues[1] == "train") {
     message = trainUsageMessage;

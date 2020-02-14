@@ -3,6 +3,6 @@
 #include <string>
 #include <vector>
 
-std::string extractText(std::string filePath);
+std::string extractText(const std::string& filePath);
 
-std::vector<std::string> extractWords(std::string text);
+std::vector<std::string> extractWords(const std::string& text);
