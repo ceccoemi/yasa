@@ -10,7 +10,7 @@ TEST(ArgumentParserTest, showUsageWithNoArgs) {
   ArgumentParser argumentParser(numArgs, argValues);
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
-  std::string expected = argumentParser.globalUsageMessage;
+  std::string expected = ArgumentParser::globalUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
@@ -20,7 +20,7 @@ TEST(ArgumentParserTest, showUsageWithFirstArgumentWrong) {
   ArgumentParser argumentParser(numArgs, argValues);
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
-  std::string expected = argumentParser.globalUsageMessage;
+  std::string expected = ArgumentParser::globalUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
@@ -30,7 +30,7 @@ TEST(ArgumentParserTest, checkFirstArgumentWhenItIsHelp) {
   ArgumentParser argumentParser(numArgs, argValues);
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
-  std::string expected = argumentParser.globalUsageMessage;
+  std::string expected = ArgumentParser::globalUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
@@ -40,7 +40,7 @@ TEST(ArgumentParserTest, checkFirstArgumentWhenItIsTrain) {
   ArgumentParser argumentParser(numArgs, argValues);
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
-  std::string expected = argumentParser.trainUsageMessage;
+  std::string expected = ArgumentParser::trainUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
@@ -50,7 +50,7 @@ TEST(ArgumentParserTest, checkFirstArgumentWhenItIsClassify) {
   ArgumentParser argumentParser(numArgs, argValues);
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
-  std::string expected = argumentParser.classifyUsageMessage;
+  std::string expected = ArgumentParser::classifyUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
@@ -60,17 +60,27 @@ TEST(ArgumentParserTest, checkPositivesArgumentAfterTrain) {
   ArgumentParser argumentParser(numArgs, argValues);
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
-  std::string expected = argumentParser.trainUsageMessage;
+  std::string expected = ArgumentParser::trainUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkNegativesArgumentAfterTrain) {
+TEST(ArgumentParserTest, checkPositivesArgumentAfterTrainExt) {
   int numArgs{3};
-  const char *argValues[numArgs] = {"./yasa", "train", "-n"};
+  const char *argValues[numArgs] = {"./yasa", "train", "--positives"};
   ArgumentParser argumentParser(numArgs, argValues);
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
-  std::string expected = argumentParser.trainUsageMessage;
+  std::string expected = ArgumentParser::trainUsageMessage;
+  ASSERT_EQ(actual, expected);
+}
+
+TEST(ArgumentParserTest, checkNegativesArgumentAfterTrainExt) {
+  int numArgs{3};
+  const char *argValues[numArgs] = {"./yasa", "train", "--negatives"};
+  ArgumentParser argumentParser(numArgs, argValues);
+  argumentParser.parseArgs();
+  std::string actual = argumentParser.main();
+  std::string expected = ArgumentParser::trainUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
@@ -80,7 +90,7 @@ TEST(ArgumentParserTest, checkFirstArgumentAfterClassify) {
   ArgumentParser argumentParser(numArgs, argValues);
   argumentParser.parseArgs();
   std::string actual = argumentParser.main();
-  std::string expected = argumentParser.classifyUsageMessage;
+  std::string expected = ArgumentParser::classifyUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 

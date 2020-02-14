@@ -7,43 +7,41 @@ ArgumentParser::ArgumentParser(int argc, const char *argv[])
   argValues = std::vector<std::string>(argv, argv + argc);
 }
 
-const std::string ArgumentParser::globalUsageMessage = "Usage Message.";
-const std::string ArgumentParser::trainUsageMessage = "Train Usage Message.";
-const std::string ArgumentParser::classifyUsageMessage =
-    "Classify Usage Message.";
+const std::string ArgumentParser::globalUsageMessage{
+    "\nUsage: yasa <command> <option(s)> <source>\n\nCommand line tool to "
+    "perform sentiment analysis written in C++ with Docker\n\nOptions:\n\t-h, "
+    "--help\t\t\tShow this help message\n\t-v, --version\t\t\tPrint version "
+    "information and quit\nCommands:\n\ttrain\t\t\t\tTrain on given"
+    "positives|negatives examples\n\tclassify\t\t\tClassify a given file\n"};
+const std::string ArgumentParser::trainUsageMessage{
+    "\nUsage: yasa train <option(s)> <source>\n\nTrain on given "
+    "positives|negatives examples\n\nOptions:\n\t-h, --help\t\t\tShow this "
+    "help message\nOptions:\n\t-p, --positives\t\t\tDirectory with positives "
+    "examples\n\t-n, --negatives\t\t\tDirectory with negatives examples"};
+const std::string ArgumentParser::classifyUsageMessage{
+    "\nUsage: yasa classify <option> <source>\n\nClassify a given "
+    "file\n\nOptions:\n\t-h, --help\t\t\tShow this help "
+    "message\nOptions:\n\t-f, --file\t\t\tFile to classify"};
 
 void ArgumentParser::handleTrainArguments() {
-  constexpr int oneOptionLength = 4;
-  constexpr int twoOptionsLength = 6;
-  constexpr int firstOptionIdx = 2;
-  constexpr int firstArgIdx = 3;
-  constexpr int secondOptionIdx = 4;
-  constexpr int secondArgIdx = 5;
-
-  if (numArgs == oneOptionLength) {
-    if (argValues[firstOptionIdx] == "-p" ||
-        argValues[firstOptionIdx] == "--positives") {
-      positivesDir = argValues[firstArgIdx];
+  if (numArgs == 4) {
+    if ((argValues[2] == "-p") || (argValues[2] == "--positives")) {
+      positivesDir = argValues[3];
       mainBehaviour = MainBehaviour::train;
-    } else if (argValues[firstOptionIdx] == "-n" ||
-               argValues[firstOptionIdx] == "--negatives") {
-      negativesDir = argValues[firstArgIdx];
+    } else if ((argValues[2] == "-n") || (argValues[2] == "--negatives")) {
+      negativesDir = argValues[3];
       mainBehaviour = MainBehaviour::train;
     }
-  } else if (numArgs == twoOptionsLength) {
-    if (((argValues[firstOptionIdx] == "-p") ||
-         (argValues[firstOptionIdx] == "--positives")) &&
-        ((argValues[secondOptionIdx] == "-n") ||
-         (argValues[secondOptionIdx] == "--negatives"))) {
-      positivesDir = argValues[firstArgIdx];
-      negativesDir = argValues[secondArgIdx];
+  } else if (numArgs == 6) {
+    if (((argValues[2] == "-p") || (argValues[2] == "--positives")) &&
+        ((argValues[4] == "-n") || (argValues[4] == "--negatives"))) {
+      positivesDir = argValues[3];
+      negativesDir = argValues[5];
       mainBehaviour = MainBehaviour::train;
-    } else if (((argValues[firstOptionIdx] == "-n") ||
-                (argValues[firstOptionIdx] == "--negatives")) &&
-               ((argValues[secondOptionIdx] == "-p") ||
-                (argValues[secondOptionIdx] == "--positives"))) {
-      negativesDir = argValues[firstArgIdx];
-      positivesDir = argValues[secondArgIdx];
+    } else if (((argValues[2] == "-n") || (argValues[2] == "--negatives")) &&
+               ((argValues[4] == "-p") || (argValues[4] == "--positives"))) {
+      negativesDir = argValues[3];
+      positivesDir = argValues[5];
       mainBehaviour = MainBehaviour::train;
     }
   }
