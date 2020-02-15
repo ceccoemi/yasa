@@ -2,11 +2,19 @@
 
 #include <stdexcept>
 
-SqliteHandle::SqliteHandle(const std::string &dbName) {
-  int rst = sqlite3_open(dbName.c_str(), &db);
+void SqliteHandle::openDb(const char *dbName) {
+  int rst = sqlite3_open(dbName, &db);
   if (rst != SQLITE_OK) {
     throw std::runtime_error(sqlite3_errmsg(db));
   }
+}
+
+SqliteHandle::SqliteHandle(const std::string &dbName) {
+  openDb(dbName.c_str());
+}
+
+SqliteHandle::SqliteHandle() {
+  openDb(":memory:");  // in-memory database
 }
 
 SqliteHandle::~SqliteHandle() { sqlite3_close(db); }

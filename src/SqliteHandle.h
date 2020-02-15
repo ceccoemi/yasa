@@ -9,6 +9,8 @@ class SqliteHandle {
  public:
   explicit SqliteHandle(const std::string& dbName);
 
+  SqliteHandle();
+
   ~SqliteHandle();
 
   // TODO(ceccoemi): find a better data structure (map is not cache friendly)
@@ -18,4 +20,6 @@ class SqliteHandle {
 
  private:
   sqlite3* db;
+
+  void openDb(const char* dbName);
 };
