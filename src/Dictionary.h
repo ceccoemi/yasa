@@ -3,7 +3,7 @@
 #include <string>
 
 #include "Sentiment.h"
-#include "SqliteYasa.h"
+#include "SqliteHandle.h"
 
 class Dictionary {
  public:
@@ -27,5 +27,5 @@ class Dictionary {
   Dictionary();
 
   static Dictionary* instance;
-  SqliteYasa db;
+  SqliteHandle db;
 };

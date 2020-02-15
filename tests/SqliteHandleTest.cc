@@ -1,5 +1,4 @@
-#include "../src/SqliteYasa.h"
-
+#include <SqliteHandle.h>
 #include <gtest/gtest.h>
 #include <fstream>
 #include <map>
@@ -7,22 +6,22 @@
 #include <string>
 #include <vector>
 
-TEST(yasaDbTest, throwRuntimeErrorWhenFilenameIsInvalid) {
-  ASSERT_THROW(SqliteYasa("/"), std::runtime_error);
+TEST(sqliteHandleTest, throwRuntimeErrorWhenFilenameIsInvalid) {
+  ASSERT_THROW(SqliteHandle("/"), std::runtime_error);
 }
 
-TEST(yasaDbTest, wrongSqlSyntaxThrowRuntimeError) {
-  SqliteYasa db = SqliteYasa("test.db");
+TEST(sqliteHandleTest, wrongSqlSyntaxThrowRuntimeError) {
+  SqliteHandle db = SqliteHandle("test.db");
   ASSERT_THROW(db.query("WRONG SQL SYNTAX"), std::runtime_error);
 }
 
-TEST(yasaDbTest, testSimpleQueries) {
-  SqliteYasa db = SqliteYasa("test.db");
+TEST(sqliteHandleTest, testSimpleQueries) {
+  SqliteHandle db = SqliteHandle("test.db");
   db.query(
       "CREATE TABLE testTable("
       "id int PRIMARY KEY NOT NULL,"
       "name VARCHAR(30) NOT NULL);");
-  SqliteYasa::QueryResult result =
+  SqliteHandle::QueryResult result =
       db.query("SELECT name FROM sqlite_master WHERE type = 'table';");
   ASSERT_EQ(result["name"], std::vector<std::string>{"testTable"});
 
