@@ -1,20 +1,19 @@
-#include <Dictionary.h>
+#include <SqliteDictionary.h>
 #include <classify.h>
 #include <gtest/gtest.h>
 #include <gtest/internal/gtest-internal.h>
 #include <train.h>
-
 #include <string>
 
 class ClassifyTest : public ::testing::Test {
  protected:
   virtual void SetUp() {
-    dictionary = Dictionary::getInstance();
+    dictionary = SqliteDictionary::getInstance();
     train("./resources/neg", "./resources/pos");
   };
 
   virtual void TearDown() { dictionary->reset(); }
-  Dictionary *dictionary;
+  SqliteDictionary *dictionary;
 };
 
 TEST(classifyTest, classifyEmptyTest) {

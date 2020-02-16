@@ -2,4 +2,4 @@
 
 #include <string>
 
-std::string classify(std::string filename);
+std::string classify(const std::string& filename);

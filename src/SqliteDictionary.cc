@@ -1,43 +1,41 @@
-#include "Dictionary.h"
+#include "SqliteDictionary.h"
 
+#include <experimental/filesystem>
 #include <vector>
 
-Dictionary* Dictionary::instance = nullptr;
+namespace fs = std::experimental::filesystem;
 
-Dictionary::Dictionary() : db("yasa.db") {
-  db.query("CREATE TABLE IF NOT EXISTS positives(word VARCHAR(30));");
-  db.query("CREATE TABLE IF NOT EXISTS negatives(word VARCHAR(30));");
-}
+SqliteDictionary* SqliteDictionary::instance = nullptr;
 
-Dictionary* Dictionary::getInstance() {
+SqliteDictionary* SqliteDictionary::getInstance() {
   if (instance == nullptr) {
-    instance = new Dictionary();
+    instance = new SqliteDictionary();
   }
   return instance;
 }
 
-void Dictionary::addWord(const std::string& word, Sentiment sentiment) {
+void SqliteDictionary::add(const std::string& word, Sentiment sentiment) {
   std::string table =
       sentiment == Sentiment::positive ? "positives" : "negatives";
   db.query("INSERT INTO " + table + "(word) VALUES('" + word + "');");
 }
 
-int Dictionary::size() { return positivesCount() + negativesCount(); }
+int SqliteDictionary::size() { return positivesCount() + negativesCount(); }
 
-void Dictionary::reset() {
+void SqliteDictionary::reset() {
   db.query(
       "DELETE FROM positives;"
       "DELETE FROM negatives;"
       "VACUUM;");
 }
 
-int Dictionary::positivesCount() {
+int SqliteDictionary::positivesCount() {
   SqliteHandle::QueryResult queryResult =
       db.query("SELECT COUNT(*) AS positives_count FROM positives;");
   return std::stoi(queryResult["positives_count"].front());
 }
 
-int Dictionary::positivesCount(const std::string& word) {
+int SqliteDictionary::positivesCount(const std::string& word) {
   SqliteHandle::QueryResult queryResult = db.query(
       "SELECT COUNT(*) AS positives_count FROM positives "
       "WHERE word = '" +
@@ -45,16 +43,21 @@ int Dictionary::positivesCount(const std::string& word) {
   return std::stoi(queryResult["positives_count"].front());
 }
 
-int Dictionary::negativesCount() {
+int SqliteDictionary::negativesCount() {
   SqliteHandle::QueryResult queryResult =
       db.query("SELECT COUNT(*) AS negatives_count FROM negatives;");
   return std::stoi(queryResult["negatives_count"].front());
 }
 
-int Dictionary::negativesCount(const std::string& word) {
+int SqliteDictionary::negativesCount(const std::string& word) {
   SqliteHandle::QueryResult queryResult = db.query(
       "SELECT COUNT(*) AS negatives_count FROM negatives "
       "WHERE word = '" +
       word + "';");
   return std::stoi(queryResult["negatives_count"].front());
+}
+
+SqliteDictionary::SqliteDictionary() : db("yasa.db") {
+  db.query("CREATE TABLE IF NOT EXISTS positives(word VARCHAR(30));");
+  db.query("CREATE TABLE IF NOT EXISTS negatives(word VARCHAR(30));");
 }
