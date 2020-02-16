@@ -32,13 +32,13 @@ void Dictionary::reset() {
 }
 
 int Dictionary::positivesCount() {
-  SqliteYasa::QueryResult queryResult =
+  SqliteHandle::QueryResult queryResult =
       db.query("SELECT COUNT(*) AS positives_count FROM positives;");
   return std::stoi(queryResult["positives_count"].front());
 }
 
 int Dictionary::positivesCount(const std::string& word) {
-  SqliteYasa::QueryResult queryResult = db.query(
+  SqliteHandle::QueryResult queryResult = db.query(
       "SELECT COUNT(*) AS positives_count FROM positives "
       "WHERE word = '" +
       word + "';");
@@ -46,13 +46,13 @@ int Dictionary::positivesCount(const std::string& word) {
 }
 
 int Dictionary::negativesCount() {
-  SqliteYasa::QueryResult queryResult =
+  SqliteHandle::QueryResult queryResult =
       db.query("SELECT COUNT(*) AS negatives_count FROM negatives;");
   return std::stoi(queryResult["negatives_count"].front());
 }
 
 int Dictionary::negativesCount(const std::string& word) {
-  SqliteYasa::QueryResult queryResult = db.query(
+  SqliteHandle::QueryResult queryResult = db.query(
       "SELECT COUNT(*) AS negatives_count FROM negatives "
       "WHERE word = '" +
       word + "';");

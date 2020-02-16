@@ -3,8 +3,8 @@ file(GLOB sourceFiles *.cc)
 
 add_library(yasalib ${headerFiles} ${sourceFiles})
 target_link_libraries(yasalib
+	PUBLIC sqlite3
 	PRIVATE gcov
-	PRIVATE sqlite3
 	PRIVATE stdc++fs  # for std::experimental::filesystem
 )
 

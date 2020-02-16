@@ -1,12 +1,17 @@
 #pragma once
 
+#include <sqlite3.h>
 #include <map>
 #include <string>
 #include <vector>
 
-class SqliteYasa {
+class SqliteHandle {
  public:
-  explicit SqliteYasa(const std::string& dbName);
+  explicit SqliteHandle(const std::string& dbName);
+
+  SqliteHandle();
+
+  ~SqliteHandle();
 
   // TODO(ceccoemi): find a better data structure (map is not cache friendly)
   using QueryResult = std::map<std::string, std::vector<std::string>>;
@@ -14,5 +19,7 @@ class SqliteYasa {
   QueryResult query(const std::string& sqlQuery);
 
  private:
-  std::string dbName;
+  sqlite3* db;
+
+  void openDb(const char* dbName);
 };
