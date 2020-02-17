@@ -1,15 +1,16 @@
 #include <SqliteDictionary.h>
+#include <Trainer.h>
 #include <classify.h>
 #include <gtest/gtest.h>
 #include <gtest/internal/gtest-internal.h>
-#include <train.h>
 #include <string>
 
 class ClassifyTest : public ::testing::Test {
  protected:
   virtual void SetUp() {
     dictionary = SqliteDictionary::getInstance();
-    train("./resources/neg", "./resources/pos");
+    Trainer trainer(dictionary);
+    trainer.train("./resources/neg", "./resources/pos");
   };
 
   virtual void TearDown() { dictionary->reset(); }

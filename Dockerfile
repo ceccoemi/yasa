@@ -2,11 +2,12 @@ FROM ubuntu:18.04
 
 RUN apt-get update --fix-missing
 
-RUN apt-get install -y g++ cmake libgtest-dev lcov libsqlite3-dev clang-tidy-9
+RUN apt-get install -y g++ cmake libgtest-dev google-mock lcov libsqlite3-dev clang-tidy-9
 
-### Compile and install Google Test ###
-RUN cd /usr/src/gtest && \
-    cmake -j$(nproc) . && \
+### Build and install Google Test and Google Mock ###
+RUN cd /usr/src/googletest/googlemock && \
+    cd build-aux && \
+    cmake -j$(nproc) .. && \
     make -j$(nproc) && \
     make install
 
