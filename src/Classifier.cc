@@ -1,5 +1,6 @@
 #include "Classifier.h"
 
+#include <stdexcept>
 #include <vector>
 
 #include "Dictionary.h"
@@ -7,16 +8,16 @@
 
 Classifier::Classifier(Dictionary* dictionary) : dictionary(dictionary) {}
 
-std::string Classifier::classify(const std::string& filename) {
+Sentiment Classifier::classify(const std::string& filename) {
   std::string text = extractText(filename);
   std::vector<std::string> words = extractWords(text);
   if (words.empty()) {
-    return "The given file does not contain words.";
+    throw std::runtime_error("The given file does not contain words.");
   }
   int counter = 0;
-  for (auto& it : words) {
-    counter += dictionary->positivesCount(it);
-    counter -= dictionary->negativesCount(it);
+  for (auto& word : words) {
+    counter += dictionary->positivesCount(word);
+    counter -= dictionary->negativesCount(word);
   }
-  return counter > 0 ? "positive" : "negative";
+  return counter > 0 ? Sentiment::positive : Sentiment::negative;
 }

@@ -2,12 +2,14 @@
 
 #include <string>
 
+#include "Sentiment.h"
+
 class Dictionary;
 
 class Classifier {
  public:
   Classifier(Dictionary* dictionary);
-  std::string classify(const std::string& filename);
+  Sentiment classify(const std::string& filename);
 
  private:
   Dictionary* dictionary;
