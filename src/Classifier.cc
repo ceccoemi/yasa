@@ -1,17 +1,18 @@
-#include "classify.h"
+#include "Classifier.h"
 
 #include <vector>
 
-#include "SqliteDictionary.h"
+#include "Dictionary.h"
 #include "fileProcessing.h"
 
-std::string classify(const std::string& filename) {
+Classifier::Classifier(Dictionary* dictionary) : dictionary(dictionary) {}
+
+std::string Classifier::classify(const std::string& filename) {
   std::string text = extractText(filename);
   std::vector<std::string> words = extractWords(text);
   if (words.empty()) {
     return "The given file does not contain words.";
   }
-  SqliteDictionary* dictionary = SqliteDictionary::getInstance();
   int counter = 0;
   for (auto& it : words) {
     counter += dictionary->positivesCount(it);

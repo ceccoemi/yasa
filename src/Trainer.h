@@ -2,8 +2,9 @@
 
 #include <string>
 
-#include "Dictionary.h"
 #include "Sentiment.h"
+
+class Dictionary;
 
 class Trainer {
  public:
