@@ -1,7 +1,6 @@
-#include "train.h"
+#include "Trainer.h"
 
 #include <experimental/filesystem>
-#include <iostream>
 #include <vector>
 
 #include "Dictionary.h"
@@ -9,25 +8,23 @@
 
 namespace fs = std::experimental::filesystem;
 
-namespace {
+Trainer::Trainer(Dictionary* dictionary) : dictionary(dictionary) {}
 
-void updateDictionary(const std::string& dir, Sentiment sentiment) {
+void Trainer::train(const std::string& negativesDir,
+                    const std::string& positivesDir) {
+  updateDictionary(negativesDir, Sentiment::negative);
+  updateDictionary(positivesDir, Sentiment::positive);
+}
+
+void Trainer::updateDictionary(const std::string& dir, Sentiment sentiment) {
   if (!dir.empty()) {
-    Dictionary* dictionary = Dictionary::getInstance();
     for (const auto& entry : fs::directory_iterator(dir)) {
       std::string filePath = entry.path();
       std::string text = extractText(filePath);
       std::vector<std::string> words = extractWords(text);
       for (const auto& word : words) {
-        dictionary->addWord(word, sentiment);
+        dictionary->add(word, sentiment);
       }
     }
   }
-}
-
-}  // namespace
-
-void train(const std::string& negativesDir, const std::string& positivesDir) {
-  updateDictionary(negativesDir, Sentiment::negative);
-  updateDictionary(positivesDir, Sentiment::positive);
 }
