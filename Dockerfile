@@ -34,7 +34,7 @@ RUN mkdir build && \
     -line-filter='[{"name":"../src/ArgumentParser.cc","lines":[[35,35],[44,44]]}]' && \
     make -j$(nproc) && \
     tests/runAllTests && \
-    src/yasa && \
+    src/yasa --version && \
     lcov --capture --directory . --output-file coverage.info && \
     lcov --remove coverage.info \
         '/usr/include/*' \
@@ -44,4 +44,4 @@ RUN mkdir build && \
     lcov --list coverage.info && \
     make install
 
-CMD ["yasa"]
+ENTRYPOINT ["yasa"]
