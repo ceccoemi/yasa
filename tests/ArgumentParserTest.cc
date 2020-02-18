@@ -7,8 +7,11 @@
 
 class ArgumentParserTest : public ::testing::Test {
  protected:
-  std::function<std::string()> trainFunc = []() { return "Training."; };
-  std::function<std::string()> classifyFunc = []() { return "Result: fake."; };
+  std::function<std::string(const std::string& negDir,
+                            const std::string& posDir)>
+      trainFunc = [](auto x, auto y) { return "Training."; };
+  std::function<std::string(const std::string& fileName)> classifyFunc =
+      [](auto x) { return "Result: fake."; };
 };
 
 TEST_F(ArgumentParserTest, showUsageWithNoArgs) {

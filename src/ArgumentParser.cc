@@ -22,9 +22,12 @@ const std::string ArgumentParser::classifyUsageMessage{
     "file\n\nOptions:\n\t-h, --help\t\t\tShow this help "
     "message\nOptions:\n\t-f, --file\t\t\tFile to classify"};
 
-ArgumentParser::ArgumentParser(int argc, std::vector<std::string> argValues,
-                               std::function<std::string()> trainFunc,
-                               std::function<std::string()> classifyFunc)
+ArgumentParser::ArgumentParser(
+    int argc, std::vector<std::string> argValues,
+    std::function<std::string(const std::string& negDir,
+                              const std::string& posDir)>
+        trainFunc,
+    std::function<std::string(const std::string& fileName)> classifyFunc)
     : numArgs{argc},
       argValues(std::move(argValues)),
       trainFunc(std::move(trainFunc)),
@@ -91,9 +94,9 @@ std::string ArgumentParser::main() {
   parseArgs();
   switch (mainBehaviour) {
     case MainBehaviour::train:
-      return trainFunc();
+      return trainFunc(negativesDir, positivesDir);
     case MainBehaviour::classify:
-      return classifyFunc();
+      return classifyFunc(fileToClassify);
     default:
       return message;
   }
