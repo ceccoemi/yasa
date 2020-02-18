@@ -12,11 +12,11 @@ target_link_libraries(
 )
 gtest_discover_tests(sentimentTest SentimentTest.cc)
 
-add_executable(sqliteHandleTest SqliteHandleTest.cc)
+add_executable(SqliteHandlerTest SqliteHandlerTest.cc)
 target_link_libraries(
-	sqliteHandleTest ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
+	SqliteHandlerTest ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
 )
-gtest_discover_tests(sqliteHandleTest SqliteHandleTest.cc)
+gtest_discover_tests(SqliteHandlerTest SqliteHandlerTest.cc)
 
 add_executable(sqliteDictionaryTest SqliteDictionaryTest.cc)
 target_link_libraries(

@@ -5,13 +5,13 @@
 
 #include "DbHandler.h"
 
-class SqliteHandle : public DbHandler {
+class SqliteHandler : public DbHandler {
  public:
-  explicit SqliteHandle(const std::string& dbName);
+  explicit SqliteHandler(const std::string& dbName);
 
-  SqliteHandle();
+  SqliteHandler();
 
-  ~SqliteHandle();
+  ~SqliteHandler();
 
   QueryResult query(const std::string& sqlQuery);
 
