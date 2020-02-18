@@ -1,3 +1,4 @@
+#include <DbHandler.h>
 #include <SqliteHandle.h>
 #include <gtest/gtest.h>
 #include <gtest/internal/gtest-internal.h>

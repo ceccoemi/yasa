@@ -9,10 +9,12 @@ void SqliteHandle::openDb(const char *dbName) {
   }
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
 SqliteHandle::SqliteHandle(const std::string &dbName) {
   openDb(dbName.c_str());
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
 SqliteHandle::SqliteHandle() {
   openDb(":memory:");  // in-memory database
 }
@@ -23,6 +25,7 @@ static int storeQueryResult(void *output, int argc, char **argv,
                             char **colName) {
   auto *result = static_cast<SqliteHandle::QueryResult *>(output);
   for (int i = 0; i < argc; i++) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     result->operator[](colName[i]).push_back(argv[i]);
   }
   return 0;

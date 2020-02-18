@@ -1,11 +1,13 @@
 #include "ArgumentParser.h"
 
+#include <algorithm>
+
 #include "version.h"
 
-ArgumentParser::ArgumentParser(int argc, const char *argv[])
-    : numArgs{argc}, mainBehaviour{displayMessage} {
-  argValues = std::vector<std::string>(argv, argv + argc);
-}
+ArgumentParser::ArgumentParser(int argc, std::vector<std::string> argValues)
+    : numArgs{argc},
+      argValues(std::move(argValues)),
+      mainBehaviour{displayMessage} {}
 
 const std::string ArgumentParser::globalUsageMessage{
     "\nUsage: yasa <command> <option(s)> <source>\n\nCommand line tool to "
@@ -32,15 +34,18 @@ void ArgumentParser::handleTrainArguments() {
       negativesDir = argValues[3];
       mainBehaviour = MainBehaviour::train;
     }
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
   } else if (numArgs == 6) {
     if (((argValues[2] == "-p") || (argValues[2] == "--positives")) &&
         ((argValues[4] == "-n") || (argValues[4] == "--negatives"))) {
       positivesDir = argValues[3];
+      // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
       negativesDir = argValues[5];
       mainBehaviour = MainBehaviour::train;
     } else if (((argValues[2] == "-n") || (argValues[2] == "--negatives")) &&
                ((argValues[4] == "-p") || (argValues[4] == "--positives"))) {
       negativesDir = argValues[3];
+      // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
       positivesDir = argValues[5];
       mainBehaviour = MainBehaviour::train;
     }

@@ -1,20 +1,17 @@
 #pragma once
 
 #include <sqlite3.h>
-#include <map>
 #include <string>
-#include <vector>
 
-class SqliteHandle {
+#include "DbHandler.h"
+
+class SqliteHandle : public DbHandler {
  public:
   explicit SqliteHandle(const std::string& dbName);
 
   SqliteHandle();
 
   ~SqliteHandle();
-
-  // TODO(ceccoemi): find a better data structure (map is not cache friendly)
-  using QueryResult = std::map<std::string, std::vector<std::string>>;
 
   QueryResult query(const std::string& sqlQuery);
 
