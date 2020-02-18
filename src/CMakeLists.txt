@@ -1,5 +1,6 @@
 file(GLOB headerFiles *.h)
 file(GLOB sourceFiles *.cc)
+list(REMOVE_ITEM sourceFiles ${CMAKE_CURRENT_LIST_DIR}/main.cc)
 
 add_library(yasalib ${headerFiles} ${sourceFiles})
 target_link_libraries(yasalib
