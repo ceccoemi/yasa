@@ -23,7 +23,6 @@ RUN mkdir build && \
         -checks=cppcoreguidelines*,modernize-*,-modernize-use-trailing-return-type,misc-*,performance-*,readability-* && \
     make -j$(nproc) && \
     tests/RunAllTests && \
-    #src/yasa --version && \
     lcov --capture --directory . --output-file coverage.info && \
     lcov --remove coverage.info \
         '/usr/include/*' \
@@ -33,4 +32,4 @@ RUN mkdir build && \
     lcov --list coverage.info && \
     make install
 
-CMD ["yasa"]
+ENTRYPOINT ["yasa"]
