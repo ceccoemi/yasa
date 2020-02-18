@@ -1,12 +1,12 @@
 #include <Classifier.h>
 #include <Sentiment.h>
+#include <gmock/gmock-actions.h>
 #include <gmock/gmock-cardinalities.h>
 #include <gmock/gmock-matchers.h>
 #include <gmock/gmock-spec-builders.h>
 #include <gtest/gtest.h>
 #include <stdexcept>
 
-#include "../src/Sentiment.h"
 #include "MockDictionary.h"
 
 using ::testing::_;

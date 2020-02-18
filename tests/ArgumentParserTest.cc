@@ -1,8 +1,8 @@
 #include <ArgumentParser.h>
 #include <gtest/gtest.h>
 #include <version.h>
-
 #include <string>
+#include <vector>
 
 TEST(ArgumentParserTest, showUsageWithNoArgs) {
   int numArgs{1};

@@ -1,6 +1,5 @@
 #include "SqliteDictionary.h"
 
-#include <iostream>
 #include <vector>
 
 #include "DbHandler.h"

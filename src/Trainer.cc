@@ -3,7 +3,6 @@
 #include <experimental/filesystem>
 #include <vector>
 
-#include "Dictionary.h"
 #include "fileProcessing.h"
 
 namespace fs = std::experimental::filesystem;

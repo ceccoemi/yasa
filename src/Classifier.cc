@@ -3,7 +3,6 @@
 #include <stdexcept>
 #include <vector>
 
-#include "Dictionary.h"
 #include "fileProcessing.h"
 
 Classifier::Classifier(Dictionary* dictionary) : dictionary(dictionary) {}

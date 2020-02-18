@@ -23,7 +23,7 @@ RUN mkdir build && \
         -checks=cppcoreguidelines*,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,modernize-*,-modernize-use-trailing-return-type,misc-*,performance-*,readability-* && \
     make -j$(nproc) && \
     tests/runAllTests && \
-    src/yasa && \
+    src/yasa --version && \
     lcov --capture --directory . --output-file coverage.info && \
     lcov --remove coverage.info \
         '/usr/include/*' \

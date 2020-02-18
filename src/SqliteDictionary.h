@@ -2,9 +2,9 @@
 
 #include <string>
 
+#include "DbHandler.h"
 #include "Dictionary.h"
 #include "Sentiment.h"
-#include "SqliteHandle.h"
 
 class SqliteDictionary : public Dictionary {
  public:

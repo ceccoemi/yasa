@@ -1,8 +1,7 @@
+#include <DbHandler.h>
 #include <gmock/gmock-generated-function-mockers.h>
 #include <gmock/gmock-matchers.h>
 #include <string>
-
-#include <DbHandler.h>
 
 class MockDbHandler : public DbHandler {
  public:

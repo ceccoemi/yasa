@@ -1,5 +1,4 @@
-#include "../src/Sentiment.h"
-
+#include <Sentiment.h>
 #include <gtest/gtest.h>
 
 TEST(sentimentTest, positiveDifferentFromNegative) {
