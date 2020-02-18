@@ -30,25 +30,23 @@ class SqliteDictionary : public Dictionary {
   }
 
   int positivesCount() {
-    SqliteHandler::QueryResult result =
-        db->query("SELECT COUNT(*) FROM positives;");
+    QueryResult result = db->query("SELECT COUNT(*) FROM positives;");
     return std::stoi(result["COUNT(*)"].front());
   }
 
   int positivesCount(const std::string& word) {
-    SqliteHandler::QueryResult result = db->query(
+    QueryResult result = db->query(
         "SELECT COUNT(*) FROM positives WHERE word = '" + word + "';");
     return std::stoi(result["COUNT(*)"].front());
   }
 
   int negativesCount() {
-    SqliteHandler::QueryResult result =
-        db->query("SELECT COUNT(*) FROM negatives;");
+    QueryResult result = db->query("SELECT COUNT(*) FROM negatives;");
     return std::stoi(result["COUNT(*)"].front());
   }
 
   int negativesCount(const std::string& word) {
-    SqliteHandler::QueryResult result = db->query(
+    QueryResult result = db->query(
         "SELECT COUNT(*) FROM negatives WHERE word = '" + word + "';");
     return std::stoi(result["COUNT(*)"].front());
   }

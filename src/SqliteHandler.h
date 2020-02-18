@@ -1,9 +1,8 @@
 #pragma once
 
+#include "QueryResult.h"
+
 #include <sqlite3.h>
-#include <map>
-#include <string>
-#include <vector>
 
 class SqliteHandler {
  public:
@@ -12,8 +11,6 @@ class SqliteHandler {
   SqliteHandler();
 
   ~SqliteHandler();
-
-  using QueryResult = std::map<std::string, std::vector<std::string>>;
 
   QueryResult query(const std::string& sqlQuery);
 

@@ -1,3 +1,4 @@
+#include <QueryResult.h>
 #include <SqliteHandler.h>
 #include <gtest/gtest.h>
 #include <gtest/internal/gtest-internal.h>
@@ -20,7 +21,7 @@ TEST(SqliteHandlerInMemoryTest, testSimpleQueries) {
       "CREATE TABLE testTable("
       "id int PRIMARY KEY NOT NULL,"
       "name VARCHAR(30) NOT NULL);");
-  SqliteHandler::QueryResult result =
+  QueryResult result =
       db.query("SELECT name FROM sqlite_master WHERE type = 'table';");
   ASSERT_EQ(result["name"], std::vector<std::string>{"testTable"});
 
@@ -62,7 +63,7 @@ TEST_F(SqliteHandlerDbTest, operateOnTheSameFile) {
       "CREATE TABLE testTable("
       "id int PRIMARY KEY NOT NULL,"
       "name VARCHAR(30) NOT NULL);");
-  SqliteHandler::QueryResult result =
+  QueryResult result =
       db2.query("SELECT name FROM sqlite_master WHERE type = 'table';");
   ASSERT_EQ(result["name"], std::vector<std::string>{"testTable"});
 }

@@ -23,7 +23,7 @@ SqliteHandler::~SqliteHandler() { sqlite3_close(db); }
 
 static int storeQueryResult(void *output, int argc, char **argv,
                             char **colName) {
-  auto *result = static_cast<SqliteHandler::QueryResult *>(output);
+  auto *result = static_cast<QueryResult *>(output);
   for (int i = 0; i < argc; i++) {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     result->operator[](colName[i]).push_back(argv[i]);
@@ -31,8 +31,8 @@ static int storeQueryResult(void *output, int argc, char **argv,
   return 0;
 }
 
-SqliteHandler::QueryResult SqliteHandler::query(const std::string &sqlQuery) {
-  SqliteHandler::QueryResult queryResult;
+QueryResult SqliteHandler::query(const std::string &sqlQuery) {
+  QueryResult queryResult;
   char *errorMessage;
   int rst = sqlite3_exec(db, sqlQuery.c_str(), storeQueryResult,
                          static_cast<void *>(&queryResult), &errorMessage);

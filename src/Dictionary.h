@@ -6,7 +6,7 @@
 
 class Dictionary {
  public:
-  virtual ~Dictionary() {}  // LCOV_EXCL_LINE
+  virtual ~Dictionary() {}
 
   virtual void add(const std::string& word, Sentiment sentiment) = 0;
 
