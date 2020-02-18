@@ -8,9 +8,9 @@
 
 class SqliteDictionary : public Dictionary {
  public:
-  ~SqliteDictionary() {}  // LCOV_EXCL_LINE
+  ~SqliteDictionary(){};
 
-  static SqliteDictionary* getInstance();
+  SqliteDictionary(DbHandler* dbHandler);
 
   void add(const std::string& word, Sentiment sentiment);
 
@@ -27,8 +27,5 @@ class SqliteDictionary : public Dictionary {
   int negativesCount(const std::string& word);
 
  private:
-  SqliteHandle db;
-  static SqliteDictionary* instance;
-
-  SqliteDictionary();
+  DbHandler* db;
 };

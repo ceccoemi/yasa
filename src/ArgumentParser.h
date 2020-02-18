@@ -5,7 +5,7 @@
 
 class ArgumentParser {
  public:
-  ArgumentParser(int argc, const char *argv[]);
+  ArgumentParser(int argc, std::vector<std::string> argValues);
   static const std::string globalUsageMessage;
   static const std::string trainUsageMessage;
   static const std::string classifyUsageMessage;
