@@ -22,7 +22,7 @@ RUN mkdir build && \
         -quiet \
         -checks=cppcoreguidelines*,modernize-*,-modernize-use-trailing-return-type,misc-*,performance-*,readability-* && \
     make -j$(nproc) && \
-    tests/runAllTests && \
+    tests/RunAllTests && \
     src/yasa --version && \
     lcov --capture --directory . --output-file coverage.info && \
     lcov --remove coverage.info \

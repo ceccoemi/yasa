@@ -3,16 +3,11 @@
 #include <stdexcept>
 #include <vector>
 
-#include "fileProcessing.h"
+#include "preprocessing.h"
 
 Classifier::Classifier(Dictionary* dictionary) : dictionary(dictionary) {}
 
-Sentiment Classifier::classify(const std::string& filename) {
-  std::string text = extractText(filename);
-  std::vector<std::string> words = extractWords(text);
-  if (words.empty()) {
-    throw std::runtime_error("The given file does not contain words.");
-  }
+Sentiment Classifier::classify(const std::vector<std::string>& words) {
   int counter = 0;
   for (auto& word : words) {
     counter += dictionary->positivesCount(word);

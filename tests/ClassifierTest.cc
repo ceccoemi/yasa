@@ -5,7 +5,8 @@
 #include <gmock/gmock-matchers.h>
 #include <gmock/gmock-spec-builders.h>
 #include <gtest/gtest.h>
-#include <stdexcept>
+#include <string>
+#include <vector>
 
 #include "MockDictionary.h"
 
@@ -13,37 +14,40 @@ using ::testing::_;
 using ::testing::AtLeast;
 using ::testing::Return;
 
-TEST(classifyTest, classifyEmptyTest) {
+TEST(ClassifyTest, classifyWithNoWordsReturnNegative) {
   MockDictionary dictionary;
   EXPECT_CALL(dictionary, positivesCount(_)).Times(0);
   EXPECT_CALL(dictionary, negativesCount(_)).Times(0);
+
   Classifier classifier(&dictionary);
-  ASSERT_THROW(classifier.classify("./resources/fileWithoutWords.txt"),
-               std::runtime_error);
+  std::vector<std::string> words{};
+  classifier.classify(words);
 }
 
-TEST(ClassifyTest, classifyPositiveTest) {
+TEST(ClassifyTest, classifyPositive) {
   MockDictionary dictionary;
-  EXPECT_CALL(dictionary, positivesCount(_))
-      .Times(AtLeast(1))
-      .WillRepeatedly(Return(2));
-  EXPECT_CALL(dictionary, negativesCount(_))
-      .Times(AtLeast(1))
-      .WillRepeatedly(Return(1));
+  std::vector<std::string> words{"very", "good", "review"};
+  EXPECT_CALL(dictionary, positivesCount("very")).Times(1).WillOnce(Return(1));
+  EXPECT_CALL(dictionary, positivesCount("good")).Times(1).WillOnce(Return(1));
+  EXPECT_CALL(dictionary, positivesCount("review"))
+      .Times(1)
+      .WillOnce(Return(1));
+  EXPECT_CALL(dictionary, negativesCount(_)).Times(3).WillRepeatedly(Return(0));
+
   Classifier classifier(&dictionary);
-  ASSERT_EQ(classifier.classify("./resources/positiveFileToClassify.txt"),
-            Sentiment::positive);
+  ASSERT_EQ(classifier.classify(words), Sentiment::positive);
 }
 
-TEST(ClassifyTest, classifyNegativeTest) {
+TEST(ClassifyTest, classifyNegative) {
   MockDictionary dictionary;
-  EXPECT_CALL(dictionary, positivesCount(_))
-      .Times(AtLeast(1))
-      .WillRepeatedly(Return(1));
-  EXPECT_CALL(dictionary, negativesCount(_))
-      .Times(AtLeast(1))
-      .WillRepeatedly(Return(2));
+  std::vector<std::string> words{"very", "bad", "review"};
+  EXPECT_CALL(dictionary, negativesCount("very")).Times(1).WillOnce(Return(1));
+  EXPECT_CALL(dictionary, negativesCount("bad")).Times(1).WillOnce(Return(1));
+  EXPECT_CALL(dictionary, negativesCount("review"))
+      .Times(1)
+      .WillOnce(Return(1));
+  EXPECT_CALL(dictionary, positivesCount(_)).Times(3).WillRepeatedly(Return(0));
+
   Classifier classifier(&dictionary);
-  ASSERT_EQ(classifier.classify("./resources/negativeFileToClassify.txt"),
-            Sentiment::negative);
+  ASSERT_EQ(classifier.classify(words), Sentiment::negative);
 }

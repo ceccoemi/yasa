@@ -1,32 +1,43 @@
 #include <Sentiment.h>
 #include <Trainer.h>
-#include <gmock/gmock-cardinalities.h>
 #include <gmock/gmock-matchers.h>
 #include <gmock/gmock-spec-builders.h>
 #include <gtest/gtest.h>
+#include <string>
+#include <vector>
 
 #include "MockDictionary.h"
 
 using ::testing::_;
-using ::testing::AtLeast;
 
-TEST(trainerTest, trainWithNoDirectories) {
+TEST(trainerTest, trainWithNoWords) {
   MockDictionary dictionary;
   EXPECT_CALL(dictionary, add(_, _)).Times(0);
+
   Trainer trainer(&dictionary);
-  trainer.train("", "");
+  std::vector<std::string> words{};
+  trainer.train(words, Sentiment::positive);
+  trainer.train(words, Sentiment::negative);
 }
 
-TEST(trainerTest, trainWithOnlyNegativesDir) {
+TEST(trainerTest, trainWithThreePositivesWords) {
   MockDictionary dictionary;
-  EXPECT_CALL(dictionary, add(_, Sentiment::negative)).Times(AtLeast(1));
+  std::vector<std::string> words{"very", "good", "review"};
+  EXPECT_CALL(dictionary, add("very", Sentiment::positive)).Times(1);
+  EXPECT_CALL(dictionary, add("good", Sentiment::positive)).Times(1);
+  EXPECT_CALL(dictionary, add("review", Sentiment::positive)).Times(1);
+
   Trainer trainer(&dictionary);
-  trainer.train("./resources/neg/", "");
+  trainer.train(words, Sentiment::positive);
 }
 
-TEST(trainerTest, trainWithOnlyPositivesDir) {
+TEST(trainerTest, trainWithThreeNegativesWords) {
   MockDictionary dictionary;
-  EXPECT_CALL(dictionary, add(_, Sentiment::positive)).Times(AtLeast(1));
+  std::vector<std::string> words{"very", "bad", "review"};
+  EXPECT_CALL(dictionary, add("very", Sentiment::negative)).Times(1);
+  EXPECT_CALL(dictionary, add("bad", Sentiment::negative)).Times(1);
+  EXPECT_CALL(dictionary, add("review", Sentiment::negative)).Times(1);
+
   Trainer trainer(&dictionary);
-  trainer.train("", "./resources/pos/");
+  trainer.train(words, Sentiment::negative);
 }

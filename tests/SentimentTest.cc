@@ -1,14 +1,14 @@
 #include <Sentiment.h>
 #include <gtest/gtest.h>
 
-TEST(sentimentTest, positiveDifferentFromNegative) {
+TEST(SentimentTest, positiveDifferentFromNegative) {
   ASSERT_NE(Sentiment::positive, Sentiment::negative);
 }
 
-TEST(sentimentTest, positiveEqualsToPositive) {
+TEST(SentimentTest, positiveEqualsToPositive) {
   ASSERT_EQ(Sentiment::positive, Sentiment::positive);
 }
 
-TEST(sentimentTest, positiveEqualsToNegative) {
+TEST(SentimentTest, positiveEqualsToNegative) {
   ASSERT_EQ(Sentiment::negative, Sentiment::negative);
 }
