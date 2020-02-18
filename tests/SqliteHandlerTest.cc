@@ -1,4 +1,5 @@
-#include <SqliteHandle.h>
+#include <QueryResult.h>
+#include <SqliteHandler.h>
 #include <gtest/gtest.h>
 #include <gtest/internal/gtest-internal.h>
 #include <experimental/filesystem>
@@ -9,18 +10,18 @@
 
 namespace fs = std::experimental::filesystem;
 
-TEST(sqliteHandleInMemoryTest, wrongSqlSyntaxThrowRuntimeError) {
-  SqliteHandle db = SqliteHandle();
+TEST(SqliteHandlerInMemoryTest, wrongSqlSyntaxThrowRuntimeError) {
+  SqliteHandler db = SqliteHandler();
   ASSERT_THROW(db.query("WRONG SQL SYNTAX"), std::runtime_error);
 }
 
-TEST(sqliteHandleInMemoryTest, testSimpleQueries) {
-  SqliteHandle db = SqliteHandle();
+TEST(SqliteHandlerInMemoryTest, testSimpleQueries) {
+  SqliteHandler db = SqliteHandler();
   db.query(
       "CREATE TABLE testTable("
       "id int PRIMARY KEY NOT NULL,"
       "name VARCHAR(30) NOT NULL);");
-  SqliteHandle::QueryResult result =
+  QueryResult result =
       db.query("SELECT name FROM sqlite_master WHERE type = 'table';");
   ASSERT_EQ(result["name"], std::vector<std::string>{"testTable"});
 
@@ -34,7 +35,7 @@ TEST(sqliteHandleInMemoryTest, testSimpleQueries) {
   ASSERT_EQ(result["name"], std::vector<std::string>{});
 }
 
-class SqliteHandleDbTest : public ::testing::Test {
+class SqliteHandlerDbTest : public ::testing::Test {
  protected:
   virtual void SetUp() {
     dbFileName = fs::temp_directory_path() / fs::path("test.db");
@@ -45,24 +46,24 @@ class SqliteHandleDbTest : public ::testing::Test {
   std::string dbFileName;
 };
 
-TEST_F(SqliteHandleDbTest, throwRuntimeErrorWhenFilenameIsInvalid) {
-  ASSERT_THROW(SqliteHandle("/"), std::runtime_error);
+TEST_F(SqliteHandlerDbTest, throwRuntimeErrorWhenFilenameIsInvalid) {
+  ASSERT_THROW(SqliteHandler("/"), std::runtime_error);
 }
 
-TEST_F(SqliteHandleDbTest, createDbInAFile) {
+TEST_F(SqliteHandlerDbTest, createDbInAFile) {
   ASSERT_FALSE(fs::is_regular_file(dbFileName));
-  SqliteHandle db(dbFileName);
+  SqliteHandler db(dbFileName);
   ASSERT_TRUE(fs::is_regular_file(dbFileName));
 }
 
-TEST_F(SqliteHandleDbTest, operateOnTheSameFile) {
-  SqliteHandle db1(dbFileName);
-  SqliteHandle db2(dbFileName);
+TEST_F(SqliteHandlerDbTest, operateOnTheSameFile) {
+  SqliteHandler db1(dbFileName);
+  SqliteHandler db2(dbFileName);
   db1.query(
       "CREATE TABLE testTable("
       "id int PRIMARY KEY NOT NULL,"
       "name VARCHAR(30) NOT NULL);");
-  SqliteHandle::QueryResult result =
+  QueryResult result =
       db2.query("SELECT name FROM sqlite_master WHERE type = 'table';");
   ASSERT_EQ(result["name"], std::vector<std::string>{"testTable"});
 }

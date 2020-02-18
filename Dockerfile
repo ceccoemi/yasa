@@ -2,11 +2,12 @@ FROM ubuntu:18.04
 
 RUN apt-get update --fix-missing
 
-RUN apt-get install -y g++ cmake libgtest-dev lcov libsqlite3-dev clang-tidy-9
+RUN apt-get install -y g++ cmake libgtest-dev google-mock lcov libsqlite3-dev clang-tidy-9
 
-### Compile and install Google Test ###
-RUN cd /usr/src/gtest && \
-    cmake -j$(nproc) . && \
+### Build and install Google Test and Google Mock ###
+RUN cd /usr/src/googletest/googlemock && \
+    cd build-aux && \
+    cmake -j$(nproc) .. && \
     make -j$(nproc) && \
     make install
 
@@ -16,25 +17,12 @@ RUN mkdir build && \
     cd build && \
     cmake -j$(nproc) -DCMAKE_EXPORT_COMPILE_COMMANDS=ON /usr/lib/llvm-9/ .. && \
     ln -s $PWD/compile_commands.json /usr/lib/llvm-9/ && \
-    clang-tidy-9 ../src/*.cc \
-        -checks=*,\
--cppcoreguidelines-owning-memory,\
--cppcoreguidelines-avoid-c-arrays,\
--cppcoreguidelines-pro-bounds-array-to-pointer-decay,\
--cppcoreguidelines-pro-bounds-pointer-arithmetic,\
--fuchsia-statically-constructed-objects,\
--fuchsia-default-arguments-calls,\
--hicpp-no-array-decay,\
--hicpp-avoid-c-arrays,\
--modernize-avoid-c-arrays,\
--modernize-use-trailing-return-type,\
--llvm-header-guard,\
--cert-err58-cpp\
-    -header-filter=.* \
-    -line-filter='[{"name":"../src/ArgumentParser.cc","lines":[[35,35],[44,44]]}]' && \
+    clang-tidy-9 \
+        ../src/*.cc \
+        -quiet \
+        -checks=cppcoreguidelines*,modernize-*,-modernize-use-trailing-return-type,misc-*,performance-*,readability-* && \
     make -j$(nproc) && \
-    tests/runAllTests && \
-    src/yasa --version && \
+    tests/RunAllTests && \
     lcov --capture --directory . --output-file coverage.info && \
     lcov --remove coverage.info \
         '/usr/include/*' \

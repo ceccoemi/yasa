@@ -1,4 +1,4 @@
-#include "fileProcessing.h"
+#include "preprocessing.h"
 
 #include <algorithm>
 #include <cctype>
@@ -80,13 +80,6 @@ bool isWord(const std::string& word) {
 }
 
 }  // namespace
-
-std::string extractText(const std::string& filePath) {
-  std::ifstream ifs(filePath);
-  std::stringstream buffer;
-  buffer << ifs.rdbuf();
-  return buffer.str();
-}
 
 std::vector<std::string> extractWords(const std::string& text) {
   std::vector<std::string> words;

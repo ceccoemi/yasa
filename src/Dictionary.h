@@ -3,29 +3,22 @@
 #include <string>
 
 #include "Sentiment.h"
-#include "SqliteHandle.h"
 
 class Dictionary {
  public:
-  static Dictionary* getInstance();
+  virtual ~Dictionary() {}
 
-  void addWord(const std::string& word, Sentiment sentiment);
+  virtual void add(const std::string& word, Sentiment sentiment) = 0;
 
-  int size();
+  virtual int size() = 0;
 
-  void reset();
+  virtual void reset() = 0;
 
-  int positivesCount();
+  virtual int positivesCount() = 0;
 
-  int positivesCount(const std::string& word);
+  virtual int positivesCount(const std::string& word) = 0;
 
-  int negativesCount();
+  virtual int negativesCount() = 0;
 
-  int negativesCount(const std::string& word);
-
- private:
-  Dictionary();
-
-  static Dictionary* instance;
-  SqliteHandle db;
+  virtual int negativesCount(const std::string& word) = 0;
 };
