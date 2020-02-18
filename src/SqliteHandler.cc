@@ -1,8 +1,8 @@
-#include "SqliteHandle.h"
+#include "SqliteHandler.h"
 
 #include <stdexcept>
 
-void SqliteHandle::openDb(const char *dbName) {
+void SqliteHandler::openDb(const char *dbName) {
   int rst = sqlite3_open(dbName, &db);
   if (rst != SQLITE_OK) {
     throw std::runtime_error(sqlite3_errmsg(db));
@@ -10,20 +10,20 @@ void SqliteHandle::openDb(const char *dbName) {
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-SqliteHandle::SqliteHandle(const std::string &dbName) {
+SqliteHandler::SqliteHandler(const std::string &dbName) {
   openDb(dbName.c_str());
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-SqliteHandle::SqliteHandle() {
+SqliteHandler::SqliteHandler() {
   openDb(":memory:");  // in-memory database
 }
 
-SqliteHandle::~SqliteHandle() { sqlite3_close(db); }
+SqliteHandler::~SqliteHandler() { sqlite3_close(db); }
 
 static int storeQueryResult(void *output, int argc, char **argv,
                             char **colName) {
-  auto *result = static_cast<SqliteHandle::QueryResult *>(output);
+  auto *result = static_cast<QueryResult *>(output);
   for (int i = 0; i < argc; i++) {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     result->operator[](colName[i]).push_back(argv[i]);
@@ -31,8 +31,8 @@ static int storeQueryResult(void *output, int argc, char **argv,
   return 0;
 }
 
-SqliteHandle::QueryResult SqliteHandle::query(const std::string &sqlQuery) {
-  SqliteHandle::QueryResult queryResult;
+QueryResult SqliteHandler::query(const std::string &sqlQuery) {
+  QueryResult queryResult;
   char *errorMessage;
   int rst = sqlite3_exec(db, sqlQuery.c_str(), storeQueryResult,
                          static_cast<void *>(&queryResult), &errorMessage);

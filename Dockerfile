@@ -20,10 +20,10 @@ RUN mkdir build && \
     clang-tidy-9 \
         ../src/*.cc \
         -quiet \
-        -checks=cppcoreguidelines*,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,modernize-*,-modernize-use-trailing-return-type,misc-*,performance-*,readability-* && \
+        -checks=cppcoreguidelines*,modernize-*,-modernize-use-trailing-return-type,misc-*,performance-*,readability-* && \
     make -j$(nproc) && \
-    tests/runAllTests && \
-    src/yasa && \
+    tests/RunAllTests && \
+    #src/yasa --version && \
     lcov --capture --directory . --output-file coverage.info && \
     lcov --remove coverage.info \
         '/usr/include/*' \

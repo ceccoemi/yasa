@@ -4,26 +4,32 @@
 
 #include "version.h"
 
-ArgumentParser::ArgumentParser(int argc, std::vector<std::string> argValues)
-    : numArgs{argc},
-      argValues(std::move(argValues)),
-      mainBehaviour{displayMessage} {}
-
 const std::string ArgumentParser::globalUsageMessage{
     "\nUsage: yasa <command> <option(s)> <source>\n\nCommand line tool to "
     "perform sentiment analysis written in C++ with Docker\n\nOptions:\n\t-h, "
     "--help\t\t\tShow this help message\n\t-v, --version\t\t\tPrint version "
     "information and quit\nCommands:\n\ttrain\t\t\t\tTrain on given"
     "positives|negatives examples\n\tclassify\t\t\tClassify a given file\n"};
+
 const std::string ArgumentParser::trainUsageMessage{
     "\nUsage: yasa train <option(s)> <source>\n\nTrain on given "
     "positives|negatives examples\n\nOptions:\n\t-h, --help\t\t\tShow this "
     "help message\nOptions:\n\t-p, --positives\t\t\tDirectory with positives "
     "examples\n\t-n, --negatives\t\t\tDirectory with negatives examples"};
+
 const std::string ArgumentParser::classifyUsageMessage{
     "\nUsage: yasa classify <option> <source>\n\nClassify a given "
     "file\n\nOptions:\n\t-h, --help\t\t\tShow this help "
     "message\nOptions:\n\t-f, --file\t\t\tFile to classify"};
+
+ArgumentParser::ArgumentParser(int argc, std::vector<std::string> argValues,
+                               std::function<std::string()> trainFunc,
+                               std::function<std::string()> classifyFunc)
+    : numArgs{argc},
+      argValues(std::move(argValues)),
+      trainFunc(std::move(trainFunc)),
+      classifyFunc(std::move(classifyFunc)),
+      mainBehaviour{displayMessage} {}
 
 void ArgumentParser::handleTrainArguments() {
   if (numArgs == 4) {
@@ -85,9 +91,9 @@ std::string ArgumentParser::main() {
   parseArgs();
   switch (mainBehaviour) {
     case MainBehaviour::train:
-      return "Training.";
+      return trainFunc();
     case MainBehaviour::classify:
-      return "Result: fake.";
+      return classifyFunc();
     default:
       return message;
   }

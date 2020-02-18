@@ -1,183 +1,190 @@
 #include <ArgumentParser.h>
 #include <gtest/gtest.h>
 #include <version.h>
-
+#include <functional>
 #include <string>
+#include <vector>
 
-TEST(ArgumentParserTest, showUsageWithNoArgs) {
+class ArgumentParserTest : public ::testing::Test {
+ protected:
+  std::function<std::string()> trainFunc = []() { return "Training."; };
+  std::function<std::string()> classifyFunc = []() { return "Result: fake."; };
+};
+
+TEST_F(ArgumentParserTest, showUsageWithNoArgs) {
   int numArgs{1};
   std::vector<std::string> argValues{"./yasa"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::globalUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, showUsageWithFirstArgumentWrong) {
+TEST_F(ArgumentParserTest, showUsageWithFirstArgumentWrong) {
   int numArgs{2};
   std::vector<std::string> argValues{"./yasa", "hola"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::globalUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkFirstArgumentWhenItIsHelp) {
+TEST_F(ArgumentParserTest, checkFirstArgumentWhenItIsHelp) {
   int numArgs{2};
   std::vector<std::string> argValues{"./yasa", "--help"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::globalUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkFirstArgumentWhenItIsTrain) {
+TEST_F(ArgumentParserTest, checkFirstArgumentWhenItIsTrain) {
   int numArgs{2};
   std::vector<std::string> argValues{"./yasa", "train"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::trainUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkFirstArgumentWhenItIsClassify) {
+TEST_F(ArgumentParserTest, checkFirstArgumentWhenItIsClassify) {
   int numArgs{2};
   std::vector<std::string> argValues{"./yasa", "classify"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::classifyUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkPositivesArgumentAfterTrain) {
+TEST_F(ArgumentParserTest, checkPositivesArgumentAfterTrain) {
   int numArgs{3};
   std::vector<std::string> argValues{"./yasa", "train", "-p"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::trainUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkPositivesArgumentAfterTrainExt) {
+TEST_F(ArgumentParserTest, checkPositivesArgumentAfterTrainExt) {
   int numArgs{3};
   std::vector<std::string> argValues{"./yasa", "train", "--positives"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::trainUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkNegativesArgumentAfterTrainExt) {
+TEST_F(ArgumentParserTest, checkNegativesArgumentAfterTrainExt) {
   int numArgs{3};
   std::vector<std::string> argValues{"./yasa", "train", "--negatives"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::trainUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkFirstArgumentAfterClassify) {
+TEST_F(ArgumentParserTest, checkFirstArgumentAfterClassify) {
   int numArgs{3};
   std::vector<std::string> argValues{"./yasa", "classify", "-f"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::classifyUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, mainTrainPositives) {
+TEST_F(ArgumentParserTest, mainTrainPositives) {
   int numArgs{4};
   std::vector<std::string> argValues{"./yasa", "train", "-p", "aPositivesDir"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected{"Training."};
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, mainTrainPositivesExtended) {
+TEST_F(ArgumentParserTest, mainTrainPositivesExtended) {
   int numArgs{4};
   std::vector<std::string> argValues{"./yasa", "train", "--positives",
                                      "aPositivesDir"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected{"Training."};
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, mainTrainNegatives) {
+TEST_F(ArgumentParserTest, mainTrainNegatives) {
   int numArgs{4};
   std::vector<std::string> argValues{"./yasa", "train", "-n", "aNegativesDir"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected{"Training."};
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, mainTrainNegativesExtended) {
+TEST_F(ArgumentParserTest, mainTrainNegativesExtended) {
   int numArgs{4};
   std::vector<std::string> argValues{"./yasa", "train", "--negatives",
                                      "aNegativesDir"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected{"Training."};
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, mainTrainPositivesAndNegatives) {
+TEST_F(ArgumentParserTest, mainTrainPositivesAndNegatives) {
   int numArgs{6};
   std::vector<std::string> argValues{"./yasa",        "train", "-p",
                                      "aPositivesDir", "-n",    "aNegativesDir"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected{"Training."};
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, mainTrainPositivesAndNegativesExtended) {
+TEST_F(ArgumentParserTest, mainTrainPositivesAndNegativesExtended) {
   int numArgs{6};
   std::vector<std::string> argValues{"./yasa",      "train",
                                      "--positives", "aPositivesDir",
                                      "--negatives", "aNegativesDir"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected{"Training."};
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, mainTrainNegativesAndPositives) {
+TEST_F(ArgumentParserTest, mainTrainNegativesAndPositives) {
   int numArgs{6};
   std::vector<std::string> argValues{"./yasa",        "train", "-n",
                                      "aNegativesDir", "-p",    "aPositivesDir"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected{"Training."};
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkClassify) {
+TEST_F(ArgumentParserTest, checkClassify) {
   int numArgs{4};
   std::vector<std::string> argValues{"./yasa", "classify", "-f",
                                      "aFileToClassify"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = "Result: fake.";
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkClassifyHelp) {
+TEST_F(ArgumentParserTest, checkClassifyHelp) {
   int numArgs{4};
   std::vector<std::string> argValues{"./yasa", "classify", "-h",
                                      "aFileToClassify"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = ArgumentParser::classifyUsageMessage;
   ASSERT_EQ(actual, expected);
 }
 
-TEST(ArgumentParserTest, checkVersion) {
+TEST_F(ArgumentParserTest, checkVersion) {
   int numArgs{2};
   std::vector<std::string> argValues{"./yasa", "-v"};
-  ArgumentParser argumentParser(numArgs, argValues);
+  ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
   std::string expected = "yasa version " + std::string(VERSION);
   ASSERT_EQ(actual, expected);

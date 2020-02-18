@@ -1,12 +1,8 @@
+#include <Dictionary.h>
+#include <Sentiment.h>
 #include <gmock/gmock-generated-function-mockers.h>
 #include <gmock/gmock-matchers.h>
-#include <gmock/gmock-spec-builders.h>
-
-#include <algorithm>
 #include <string>
-
-#include "../src/Dictionary.h"
-#include "../src/Sentiment.h"
 
 class MockDictionary : public Dictionary {
  public:
