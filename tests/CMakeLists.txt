@@ -18,11 +18,11 @@ target_link_libraries(
 )
 gtest_discover_tests(SqliteHandlerTest SqliteHandlerTest.cc)
 
-add_executable(sqliteDictionaryTest SqliteDictionaryTest.cc)
+add_executable(SqliteDictionaryTest SqliteDictionaryTest.cc)
 target_link_libraries(
-	sqliteDictionaryTest ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
+	SqliteDictionaryTest ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
 )
-gtest_discover_tests(sqliteDictionaryTest SqliteDictionaryTest.cc)
+gtest_discover_tests(SqliteDictionaryTest SqliteDictionaryTest.cc)
 
 add_executable(fileProcessingTest fileProcessingTest.cc)
 target_link_libraries(

@@ -1,17 +1,19 @@
 #pragma once
 
 #include <sqlite3.h>
+#include <map>
 #include <string>
+#include <vector>
 
-#include "DbHandler.h"
-
-class SqliteHandler : public DbHandler {
+class SqliteHandler {
  public:
   explicit SqliteHandler(const std::string& dbName);
 
   SqliteHandler();
 
   ~SqliteHandler();
+
+  using QueryResult = std::map<std::string, std::vector<std::string>>;
 
   QueryResult query(const std::string& sqlQuery);
 

@@ -2,30 +2,57 @@
 
 #include <string>
 
-#include "DbHandler.h"
 #include "Dictionary.h"
 #include "Sentiment.h"
+#include "SqliteHandler.h"
 
+template <class Handler>  // template needed for mocking purposes
 class SqliteDictionary : public Dictionary {
  public:
-  ~SqliteDictionary(){};
+  SqliteDictionary(Handler* db) : db(db) {
+    db->query("CREATE TABLE IF NOT EXISTS positives(word VARCHAR(30));");
+    db->query("CREATE TABLE IF NOT EXISTS negatives(word VARCHAR(30));");
+  }
 
-  SqliteDictionary(DbHandler* dbHandler);
+  void add(const std::string& word, Sentiment sentiment) {
+    std::string table =
+        sentiment == Sentiment::positive ? "positives" : "negatives";
+    db->query("INSERT INTO " + table + "(word) VALUES('" + word + "');");
+  }
 
-  void add(const std::string& word, Sentiment sentiment);
+  int size() { return positivesCount() + negativesCount(); }
 
-  int size();
+  void reset() {
+    db->query(
+        "DELETE FROM positives;"
+        "DELETE FROM negatives;"
+        "VACUUM;");
+  }
 
-  void reset();
+  int positivesCount() {
+    SqliteHandler::QueryResult result =
+        db->query("SELECT COUNT(*) FROM positives;");
+    return std::stoi(result["COUNT(*)"].front());
+  }
 
-  int positivesCount();
+  int positivesCount(const std::string& word) {
+    SqliteHandler::QueryResult result = db->query(
+        "SELECT COUNT(*) FROM positives WHERE word = '" + word + "';");
+    return std::stoi(result["COUNT(*)"].front());
+  }
 
-  int positivesCount(const std::string& word);
+  int negativesCount() {
+    SqliteHandler::QueryResult result =
+        db->query("SELECT COUNT(*) FROM negatives;");
+    return std::stoi(result["COUNT(*)"].front());
+  }
 
-  int negativesCount();
-
-  int negativesCount(const std::string& word);
+  int negativesCount(const std::string& word) {
+    SqliteHandler::QueryResult result = db->query(
+        "SELECT COUNT(*) FROM negatives WHERE word = '" + word + "';");
+    return std::stoi(result["COUNT(*)"].front());
+  }
 
  private:
-  DbHandler* db;
+  Handler* db;
 };
