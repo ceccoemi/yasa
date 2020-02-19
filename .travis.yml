@@ -10,5 +10,5 @@ install: true
 script:
   - docker build -t yasa .
   - docker run --name yasa-container yasa
-  - docker cp yasa-container:/usr/local/src/yasa/build/coverage.info .
+  - docker cp yasa-container:/usr/local/src/yasa/debug-build/coverage.info .
   - wget -S -O - https://codecov.io/bash | bash
