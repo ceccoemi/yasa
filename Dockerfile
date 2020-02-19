@@ -40,6 +40,10 @@ RUN mkdir debug-build && \
     make -j$(nproc) yasa && \
     cd src && \
     make install && \
-    yasa --version
+    yasa --version && \
+    cd ../../example && \
+    yasa train -n neg -p pos && \
+    yasa classify -f neg1.txt && \
+    yasa classify -f pos1.txt
 
 ENTRYPOINT ["yasa"]
