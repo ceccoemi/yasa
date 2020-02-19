@@ -13,15 +13,18 @@ RUN cd /usr/src/googletest/googlemock && \
 
 WORKDIR /usr/local/src/yasa
 COPY . .
-RUN mkdir build && \
-    cd build && \
-    cmake -j$(nproc) -DCMAKE_EXPORT_COMPILE_COMMANDS=ON /usr/lib/llvm-9/ .. && \
+RUN mkdir debug-build && \
+    cd debug-build && \
+    cmake \
+        -j$(nproc) \
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON /usr/lib/llvm-9/ \
+        -DCMAKE_BUILD_TYPE=DEBUG .. && \
     ln -s $PWD/compile_commands.json /usr/lib/llvm-9/ && \
     clang-tidy-9 \
         ../src/*.cc \
         -quiet \
         -checks=cppcoreguidelines*,modernize-*,-modernize-use-trailing-return-type,misc-*,performance-*,readability-* && \
-    make -j$(nproc) && \
+    make -j$(nproc) RunAllTests && \
     tests/RunAllTests && \
     lcov --capture --directory . --output-file coverage.info && \
     lcov --remove coverage.info \
@@ -30,6 +33,13 @@ RUN mkdir build && \
         '/usr/local/src/yasa/tests/*' \
         --quiet --output-file coverage.info && \
     lcov --list coverage.info && \
-    make install
+    cd .. && \
+    mkdir release-build && \
+    cd release-build && \
+    cmake -j$(nproc) -DCMAKE_BUILD_TYPE=Release .. && \
+    make -j$(nproc) yasa && \
+    cd src && \
+    make install && \
+    yasa --version
 
 ENTRYPOINT ["yasa"]
