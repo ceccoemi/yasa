@@ -1,21 +1,17 @@
 file(GLOB headerFiles *.h)
 file(GLOB sourceFiles *.cc)
+list(REMOVE_ITEM sourceFiles ${CMAKE_CURRENT_LIST_DIR}/main.cc)
 
 add_library(yasalib ${headerFiles} ${sourceFiles})
-target_link_libraries(yasalib
+target_link_libraries(
+	yasalib
 	PUBLIC sqlite3
+	PUBLIC stdc++fs  # for std::experimental::filesystem
 	PRIVATE gcov
-	PRIVATE stdc++fs  # for std::experimental::filesystem
 )
 
 add_executable(yasa main.cc)
 target_link_libraries(yasa yasalib)
 
-include(GNUInstallDirs)
-install(
-	TARGETS yasa
-	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-
+include(GNUInstallDirs)  # import CMAKE_INSTALL_BINDIR
+install(TARGETS yasa RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

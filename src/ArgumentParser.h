@@ -10,17 +10,22 @@ class ArgumentParser {
   static const std::string trainUsageMessage;
   static const std::string classifyUsageMessage;
 
-  ArgumentParser(int argc, std::vector<std::string> argValues,
-                 std::function<std::string()> trainFunc,
-                 std::function<std::string()> classifyFunc);
+  ArgumentParser(
+      int argc, std::vector<std::string> argValues,
+      std::function<std::string(const std::string& negDir,
+                                const std::string& posDir)>
+          trainFunc,
+      std::function<std::string(const std::string& fileName)> classifyFunc);
 
   std::string main();
 
  private:
   int numArgs;
   std::vector<std::string> argValues;
-  std::function<std::string()> trainFunc;
-  std::function<std::string()> classifyFunc;
+  std::function<std::string(const std::string& negDir,
+                            const std::string& posDir)>
+      trainFunc;
+  std::function<std::string(const std::string& fileName)> classifyFunc;
   std::string message;
   std::string positivesDir;
   std::string negativesDir;

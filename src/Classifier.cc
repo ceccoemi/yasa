@@ -1,9 +1,6 @@
 #include "Classifier.h"
 
-#include <stdexcept>
-#include <vector>
-
-#include "preprocessing.h"
+#include <iostream>
 
 Classifier::Classifier(Dictionary* dictionary) : dictionary(dictionary) {}
 

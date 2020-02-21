@@ -7,8 +7,11 @@
 
 class ArgumentParserTest : public ::testing::Test {
  protected:
-  std::function<std::string()> trainFunc = []() { return "Training."; };
-  std::function<std::string()> classifyFunc = []() { return "Result: fake."; };
+  std::function<std::string(const std::string& negDir,
+                            const std::string& posDir)>
+      trainFunc = [](auto x, auto y) { return "neg: " + x + " pos: " + y; };
+  std::function<std::string(const std::string& fileName)> classifyFunc =
+      [](auto x) { return "classify " + x; };
 };
 
 TEST_F(ArgumentParserTest, showUsageWithNoArgs) {
@@ -97,7 +100,7 @@ TEST_F(ArgumentParserTest, mainTrainPositives) {
   std::vector<std::string> argValues{"./yasa", "train", "-p", "aPositivesDir"};
   ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
-  std::string expected{"Training."};
+  std::string expected{"neg:  pos: aPositivesDir"};
   ASSERT_EQ(actual, expected);
 }
 
@@ -107,7 +110,7 @@ TEST_F(ArgumentParserTest, mainTrainPositivesExtended) {
                                      "aPositivesDir"};
   ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
-  std::string expected{"Training."};
+  std::string expected{"neg:  pos: aPositivesDir"};
   ASSERT_EQ(actual, expected);
 }
 
@@ -116,7 +119,7 @@ TEST_F(ArgumentParserTest, mainTrainNegatives) {
   std::vector<std::string> argValues{"./yasa", "train", "-n", "aNegativesDir"};
   ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
-  std::string expected{"Training."};
+  std::string expected{"neg: aNegativesDir pos: "};
   ASSERT_EQ(actual, expected);
 }
 
@@ -126,7 +129,7 @@ TEST_F(ArgumentParserTest, mainTrainNegativesExtended) {
                                      "aNegativesDir"};
   ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
-  std::string expected{"Training."};
+  std::string expected{"neg: aNegativesDir pos: "};
   ASSERT_EQ(actual, expected);
 }
 
@@ -136,7 +139,7 @@ TEST_F(ArgumentParserTest, mainTrainPositivesAndNegatives) {
                                      "aPositivesDir", "-n",    "aNegativesDir"};
   ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
-  std::string expected{"Training."};
+  std::string expected{"neg: aNegativesDir pos: aPositivesDir"};
   ASSERT_EQ(actual, expected);
 }
 
@@ -147,7 +150,7 @@ TEST_F(ArgumentParserTest, mainTrainPositivesAndNegativesExtended) {
                                      "--negatives", "aNegativesDir"};
   ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
-  std::string expected{"Training."};
+  std::string expected{"neg: aNegativesDir pos: aPositivesDir"};
   ASSERT_EQ(actual, expected);
 }
 
@@ -157,7 +160,7 @@ TEST_F(ArgumentParserTest, mainTrainNegativesAndPositives) {
                                      "aNegativesDir", "-p",    "aPositivesDir"};
   ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
-  std::string expected{"Training."};
+  std::string expected{"neg: aNegativesDir pos: aPositivesDir"};
   ASSERT_EQ(actual, expected);
 }
 
@@ -167,7 +170,7 @@ TEST_F(ArgumentParserTest, checkClassify) {
                                      "aFileToClassify"};
   ArgumentParser argumentParser(numArgs, argValues, trainFunc, classifyFunc);
   std::string actual = argumentParser.main();
-  std::string expected = "Result: fake.";
+  std::string expected = "classify aFileToClassify";
   ASSERT_EQ(actual, expected);
 }
 

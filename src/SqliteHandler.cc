@@ -1,7 +1,5 @@
 #include "SqliteHandler.h"
 
-#include <stdexcept>
-
 void SqliteHandler::openDb(const char *dbName) {
   int rst = sqlite3_open(dbName, &db);
   if (rst != SQLITE_OK) {

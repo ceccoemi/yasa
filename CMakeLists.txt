@@ -2,11 +2,10 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project(yasa VERSION 0.1 LANGUAGES CXX)
 
-enable_testing()
-
 set(CMAKE_CXX_STANDARD 17)
 
-add_compile_options(-Wall -Wextra --coverage)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra --coverage")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra")
 
 add_subdirectory(src)
 add_subdirectory(tests)
