@@ -18,15 +18,7 @@ COPY . .
 
 # Debug build with warnings, tests and code coverage
 WORKDIR ${YASA_ROOT_DIR}/debug-build
-RUN cmake \
-        -j$(nproc) \
-        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON /usr/lib/llvm-9/ \
-        -DCMAKE_BUILD_TYPE=DEBUG .. && \
-    ln -s $PWD/compile_commands.json /usr/lib/llvm-9/ && \
-    clang-tidy-9 \
-        ../src/*.cc \
-        -quiet \
-        -checks=cppcoreguidelines*,modernize-*,-modernize-use-trailing-return-type,misc-*,performance-*,readability-* && \
+RUN cmake -j$(nproc) -DCMAKE_BUILD_TYPE=DEBUG .. && \
     make -j$(nproc) RunAllTests && \
     tests/RunAllTests && \
     lcov --capture --directory . --output-file coverage.info && \

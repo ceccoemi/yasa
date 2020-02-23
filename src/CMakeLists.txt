@@ -1,3 +1,9 @@
+set(
+	CMAKE_CXX_CLANG_TIDY
+	clang-tidy-9
+    -checks=cppcoreguidelines*,modernize-*,-modernize-use-trailing-return-type,misc-*,performance-*,readability-*
+)
+
 file(GLOB headerFiles *.h)
 file(GLOB sourceFiles *.cc)
 list(REMOVE_ITEM sourceFiles ${CMAKE_CURRENT_LIST_DIR}/main.cc)
