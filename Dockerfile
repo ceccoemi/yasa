@@ -45,4 +45,6 @@ RUN cmake -j$(nproc) -DCMAKE_BUILD_TYPE=Release .. && \
     make install && \
     yasa --version
 
-WORKDIR ${YASA_ROOT_DIR}
+WORKDIR /
+
+ENTRYPOINT ["yasa"]

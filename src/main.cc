@@ -60,7 +60,6 @@ auto classifyFunc = [](auto fileName) {
 };
 
 int main(int argc, const char* argv[]) {
-  std::cout << fs::current_path() << '\n';
   ArgumentParser argumentParser(argc,
                                 std::vector<std::string>(argv, argv + argc),
                                 trainFunc, classifyFunc);
