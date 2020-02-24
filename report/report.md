@@ -18,22 +18,46 @@ It allows to train an underneath model of sentiment analysis with text files lab
 The management of this model is done trough a command line interface (CLI).
 The model can be trained giving folder containing positives or negatives text using the command
 
-`$ yasa train --positives <positives-folder> --negatives <negatives-folder>`
+    docker run \
+        --mount type=bind,source=<path-to-yasa.db>,target=/yasa.db \
+        --mount type=bind,source=<path-to-pos-dir>,target=/<pos-dir>,readonly \
+        --mount type=bind,source=<path-to-neg-dir>,target=/<neg-dir>,readonly \
+        --rm --tty yasa train -p <pos-dir> -n <neg-dir>
 
 After trained, the model is able to classify a text file using the command
 
-`$ yasa classify --file <file-to-classify>`
+    docker run \
+        --mount type=bind,source=<path-to-yasa.db>,target=/yasa.db \
+        --mount type=bind,source=<path-to-file-to-classify>,target=/<file-to-classify>,readonly \
+        --rm --tty yasa classify -f <file-to-classify>
+
+The .db file must exists and must be called yasa.db. and files and directories used must be bound to the container. This can be achieved with docker volumes or docker bind mounts.
+
+For example in order to train the underneath model with all the text files in the directories `"$PWD"/example/pos` and `"$PWD"/example/neg`, you can use the following command
+
+    docker run \
+        --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
+        --mount type=bind,source="$PWD"/example,target=/example,readonly \
+        --rm --tty yasa train -n example/neg -p example/pos
+
+If you want to classify e.g. the `"$PWD"/example/neg.txt` file with the model trained just before, you can use the following command
+
+    docker run \
+        --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
+        --mount type=bind,source="$PWD"/example,target=/example,readonly \
+        --rm --tty yasa classify -f example/neg.txt
 
 ## Applied techniques and frameworks
 The software is implemented in C++ and in order to make it reproducible and portable we use docker. To store all the information that the underneath model needs, we use SQLite that is a database management system (DBMS) based on a relational model.
 
 - **Test ->** Google Test
 - **Mock ->** Google Mock
-- **Code Covarage ->** Gcov
+- **Code Covarage ->** GCOV + LCOV + CodeCov
 - **Code Quality ->** LGTM
-- **Linter + Formatter ->** Clang-tidy
+- **Linter ->** clang-tidy
+- **Formatter ->** clang-format
 - **Build Automation ->** CMake + Docker
-- **CI Server->** Travis CI
+- **Continuous Integration ->** Travis CI
 - **VCS ->** GitHub
 - **IDE ->** Eclipse
 - **DBMS ->** SQLite
@@ -76,3 +100,137 @@ One of the most difficult parts to test was the main because it has a lot of log
 [//]: # (At some point during the development of this project, there was a folder `./tests/resources` that contained examples of text files. They allowed us to test Trainer and Classifier classes, but we understood that with a mock object on the text files we would achieve a more isolated unit-tests for both Trainer and Classifier classes.)
 
 ## Explanation of some of the tools used
+
+### LGTM
+
+[LGTM](https://lgtm.com) is a code analysis platform that automatically checks your code for real Common Vulnerabilities and Exposures (CVEs). By combining deep semantic code search with data science insights, LGTM ranks the most relevant results to show you only the alerts that matter.
+
+LGTM processes the contents of software development projects whose source code is stored in public Git repositories hosted on such as GitHub.com and among the currently supported languages there is C++.
+
+If the project you're interested in isn't already on LGTM, simply log in and [add it](https://lgtm.com/help/lgtm/adding-projects)  directly from your Project lists page. In this way you enable automated code review for your project's pull requests.
+
+### CodeCov
+[Codecov](https://codecov.io/) takes coverage to the next level. Unlike open source and paid products, Codecov focuses on integration and promoting healthy pull requests. Codecov delivers or "injects" coverage metrics directly into the modern workflow to promote more code coverage, especially in pull requests where new features and bug fixes commonly occur.
+
+We use CodeCov following these simple steps:
+
+* Sign up on codecov.io and link our GitHub.com account.
+* Once linked, Codecov will automatically sync all the repositories to which you have access
+* Select our repository at https://github.com/ceccoemi/yasa
+* Run our normal test suite to generate code coverage reports through Travis CI
+* Use in .travis.yml the bash uploader to upload our coverage report(s) to Codecov.
+
+In .travis.yml the bash uploader is the following script command:
+
+    - wget -S -O - https://codecov.io/bash | bash
+
+### Google Test
+
+[Google Test](https://github.com/google/googletest/tree/master) is a *C++ Testing Framework* developed and maintained by Google. In the last years it became the standard for testing C++ applications. Since Google Test is based on the popular xUnit architecture, it is very straightforward to use it if you are used to test software with JUnit.
+
+#### Installation
+
+To write a test program using Google Test, you need to compile Google Test into a library and link your test with it. In our application, since it is built in a Docker environment with Ubuntu 18.04, you have to install it with
+
+    $ sudo apt-get install libgtest-dev
+
+After this is done, you have to manually compile it
+
+    $ cd /usr/src/gtest
+    $ cd build-aux
+    $ cmake -j$(nproc) ..
+    $ make -j$(nproc)
+    $ sudo make install
+
+#### Compile code with Google Test
+
+Now it must be linked to the main function of the tests. CMake provides the handy function `find_package(GTest REQUIRED)` to locate the Google Test library in the system. If it is found then a variable called `GTEST_BOTH_LIBRARIES`containing `libgtest` and `libgtest-main` is created. Finally that variable `GTEST_BOTH_LIBRARIES` can be linked to the executable with `target_link_libraries`. In our `CMakeLists.txt` located in the test directory we have
+
+    find_package(GTest REQUIRED)
+
+    ...
+
+    file(GLOB sourceFiles *.cc)
+    add_executable(RunAllTests ${sourceFiles})
+    target_link_libraries(
+	    RunAllTests ${GTEST_BOTH_LIBRARIES} ${TEST_LIB}
+    )
+
+#### Usage
+
+When using Google Test, you start by writing assertions, which are statements that check whether a condition is true. An assertion's result can be success, nonfatal failure, or fatal failure. If a fatal failure occurs, it aborts the current function; otherwise the program continues normally.
+
+Tests use assertions to verify the tested code's behavior. If a test crashes or has a failed assertion, then it fails; otherwise it succeeds.
+
+Google Test assertions are macros that resemble function calls. You test a class or function by making assertions about its behavior. When an assertion fails, Google Test prints the assertion's source file and line number location, along with a failure message. You may also supply a custom failure message which will be appended to Google Test's message.
+
+The assertions come in pairs that test the same thing but have different effects on the current function. `ASSERT_*` versions generate fatal failures when they fail, and abort the current function. `EXPECT_*` versions generate nonfatal failures, which don't abort the current function. In our project we only use `ASSERT_*` functions.
+
+Here an example extracted from `preprocessingTest`:
+
+    #include <gtest/gtest.h>
+    #include <preprocessing.h>
+    #include <string>
+    #include <vector>
+
+    TEST(PreprocessingTest, emptyTest) {
+      std::vector<std::string> actual = extractWords("");
+      std::vector<std::string> expected{};
+      ASSERT_EQ(actual, expected);
+    }
+
+    TEST(PreprocessingTest, oneLetterText) {
+      std::vector<std::string> actual = extractWords("O");
+      std::vector<std::string> expected{"O"};
+      ASSERT_EQ(actual, expected);
+    }
+
+    TEST(PreprocessingTest, extractWordsWithSpaces) {
+      std::vector<std::string> actual =
+          extractWords("  yasa is   the\nbest\r\nsoftware\tin\vthe\fworld   ");
+      std::vector<std::string> expected = {"yasa", "best", "software", "world"};
+      ASSERT_EQ(actual, expected);
+    }
+
+Each test function is identified by
+
+    TEST(test_case_name, test_name) {
+     ... test body ...
+    }
+
+As you can see, the usage is very similar to JUnit. You can also create a *Test Fixture* to use the same data configuration for multiple tests, for example in `SqliteHandlerTest`:
+
+    class SqliteHandlerDbTest : public ::testing::Test {
+     protected:
+      virtual void SetUp() {
+        dbFileName = fs::temp_directory_path() / fs::path("test.db");
+      }
+
+      virtual void TearDown() { fs::remove(dbFileName); }
+
+      std::string dbFileName;
+    };
+
+    TEST_F(SqliteHandlerDbTest, throwRuntimeErrorWhenFilenameIsInvalid) {
+      ASSERT_THROW(SqliteHandler("/"), std::runtime_error);
+    }
+
+    TEST_F(SqliteHandlerDbTest, createDbInAFile) {
+      ASSERT_FALSE(fs::is_regular_file(dbFileName));
+      SqliteHandler db(dbFileName);
+      ASSERT_TRUE(fs::is_regular_file(dbFileName));
+    }
+
+    TEST_F(SqliteHandlerDbTest, operateOnTheSameFile) {
+      SqliteHandler db1(dbFileName);
+      SqliteHandler db2(dbFileName);
+      db1.query(
+          "CREATE TABLE testTable("
+          "id int PRIMARY KEY NOT NULL,"
+          "name VARCHAR(30) NOT NULL);");
+      QueryResult result =
+          db2.query("SELECT name FROM sqlite_master WHERE type = 'table';");
+      ASSERT_EQ(result["name"], std::vector<std::string>{"testTable"});
+    }
+
+Here the fixture class is `SqliteHandlerDbTest`, which stores the database file name. A temporary file is created in `SetUp` before the execution of each test and it is destroyed in `TearDown` when each test ends.
