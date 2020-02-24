@@ -11,7 +11,7 @@ target_link_libraries(
 )
 
 add_executable(yasa main.cc)
-target_link_libraries(yasa yasalib)
+target_link_libraries(yasa yasalib ${CONAN_LIBS})
 
 include(GNUInstallDirs)  # import CMAKE_INSTALL_BINDIR
 install(TARGETS yasa RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

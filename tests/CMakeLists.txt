@@ -2,7 +2,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 
 find_package(GTest REQUIRED)  # import GTEST_BOTH_LIBRARIES
 
-set(TEST_LIB yasalib gmock pthread gcov)
+set(TEST_LIB yasalib gmock pthread gcov ${CONAN_LIBS})
 
 add_executable(SentimentTest SentimentTest.cc)
 target_link_libraries(
