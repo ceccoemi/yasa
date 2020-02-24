@@ -13,10 +13,9 @@
 
 ## What we have implemented
 We implemented **[yasa](https://github.com/ceccoemi/yasa) ** (Yet Another Sentiment Analyser), a containerized command line tool that make easy the application of Sentiment Analysis.
-It allows to train an underneath model of sentiment analysis with text files labeled as positives or negatives. After the training phase the model is able to predict the label of an unseen text file into positive/negative.
+**yasa** allows to train an underneath model of sentiment analysis with text files labeled as positives or negatives. After the training phase the model is able to predict the label of an unseen text file into positive/negative.
 
-The management of this model is done trough a command line interface (CLI).
-The model can be trained giving folder containing positives or negatives text using the command
+The management of this model is done through a command line interface (CLI). The model can be trained feeding it on a folder containing positives text and/or folder containing negatives text. The following command is an example of usage:
 
     docker run \
         --mount type=bind,source=<path-to-yasa.db>,target=/yasa.db \
@@ -24,23 +23,23 @@ The model can be trained giving folder containing positives or negatives text us
         --mount type=bind,source=<path-to-neg-dir>,target=/<neg-dir>,readonly \
         --rm --tty yasa train -p <pos-dir> -n <neg-dir>
 
-After trained, the model is able to classify a text file using the command
+After trained, the model is able to classify a text file using the following command:
 
     docker run \
         --mount type=bind,source=<path-to-yasa.db>,target=/yasa.db \
         --mount type=bind,source=<path-to-file-to-classify>,target=/<file-to-classify>,readonly \
         --rm --tty yasa classify -f <file-to-classify>
 
-The .db file must exists and must be called yasa.db. and files and directories used must be bound to the container. This can be achieved with docker volumes or docker bind mounts.
+The `yasa.db` file must exists, moreover files and directories used must be bound to the container. This can be achieved with docker volumes or docker bind mounts.
 
-For example in order to train the underneath model with all the text files in the directories `"$PWD"/example/pos` and `"$PWD"/example/neg`, you can use the following command
+For example in order to train the underneath model with all the text files in the directories `"$PWD"/example/pos` and `"$PWD"/example/neg`, you can use the following command:
 
     docker run \
         --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
         --mount type=bind,source="$PWD"/example,target=/example,readonly \
         --rm --tty yasa train -n example/neg -p example/pos
 
-If you want to classify e.g. the `"$PWD"/example/neg.txt` file with the model trained just before, you can use the following command
+If you want to classify e.g. the `"$PWD"/example/neg.txt` file with the model trained just before, you can use the following command:
 
     docker run \
         --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
@@ -50,54 +49,54 @@ If you want to classify e.g. the `"$PWD"/example/neg.txt` file with the model tr
 ## Applied techniques and frameworks
 The software is implemented in C++ and in order to make it reproducible and portable we use docker. To store all the information that the underneath model needs, we use SQLite that is a database management system (DBMS) based on a relational model.
 
-- **Test ->** Google Test
-- **Mock ->** Google Mock
-- **Code Covarage ->** GCOV + LCOV + CodeCov
-- **Code Quality ->** LGTM
-- **Linter ->** clang-tidy
-- **Formatter ->** clang-format
-- **Build Automation ->** CMake + Docker
-- **Continuous Integration ->** Travis CI
-- **VCS ->** GitHub
-- **IDE ->** Eclipse
-- **DBMS ->** SQLite
+- **Test ->** [Google Test](https://github.com/google/googletest)
+- **Mock ->** [Google Mock](https://github.com/google/googletest/tree/master/googlemock)
+- **Code Covarage ->** [GCOV](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html) + [LCOV](http://ltp.sourceforge.net/coverage/lcov.php) + [CodeCov](https://codecov.io/)
+- **Code Quality ->** [LGTM](https://lgtm.com/)
+- **Linter ->** [clang-tidy](https://clang.llvm.org/extra/clang-tidy/)
+- **Formatter ->** [clang-format](https://clang.llvm.org/docs/ClangFormat.html)
+- **Build Automation ->** [CMake](https://cmake.org/) + [Docker](https://www.docker.com/)
+- **Continuous Integration ->** [Travis CI](https://travis-ci.org/)
+- **VCS ->** [GitHub](https://github.com)
+- **IDE ->** [Eclipse](https://www.eclipse.org)
+- **DBMS ->** [SQLite](https://sqlite.org/index.html)
 
 ## Design and implementation choices
-The main function calls the ArgumentParser class that parses the input arguments given through the CLI.
+The `main` function calls the `ArgumentParser` class that parses the input arguments given through the CLI.
 Then there are three possibilities:
 
 * train;
 * classify;
 * display usage message.
 
-The training is handled by the Trainer class that:
+The training is handled by the `Trainer` class that:
 
-1. reads all the text files in the given directories with TextFileReader class;
-2. tokenizes the words previously found with the extractWords function (in preprocessing source code file);
-3. updates the underneath SQLite database using the SqliteDictionary class.
+1. reads all the text files in the given directories with `TextFileReader` class;
+2. tokenizes the words previously found with the `extractWords` function (in `preprocessing.cc` source code file);
+3. updates the underneath SQLite database using the `SqliteDictionary` class.
 
-We wrapped the C-written API of SQLite in the class SqliteHandler to make easier the usage.
-The classifying is handled by a Classifier class that:
+We wrapped the C-written API of SQLite in the class `SqliteHandler` to make easier the usage.
+The classifying is handled by a `Classifier` class that:
 
-1. reads the given text file with TextFileReader;
-2. tokenizes the words previously found with the extractWords function (in preprocessing source code file);
-3. classifies the text querying the database using SqliteDictionary class.
+1. reads the given text file with `TextFileReader`;
+2. tokenizes the words previously found with the `extractWords` function (in `preprocessing.cc` source code file);
+3. classifies the text querying the database using `SqliteDictionary` class.
 
-Usage messages to displayed are managed by the ArgumentParser class.
+Usage messages to displayed are managed by the `ArgumentParser` class.
 
 ## Some of the problems encountered and how we have solved them
-The management of SQLite database was one of the biggest challenges because its implementation in C language did not fit well with our other C++ classes. We have solved this problem encapsulating the necessary functionality of the API wrapping it in our SqliteHandler C++ class.
+The management of SQLite database was one of the biggest challenges because its implementation in C language did not fit well with our other C++ classes. We have solved this problem encapsulating the necessary functionality of the API wrapping it in our `SqliteHandler` C++ class.
 
 We initially missed the concept of isolation for unit-tests: when a bug in a component caused tests of other components to fail. Then Google Mock came into rescue!
 
-* Google Mock requires a virtual implementation of the class to mock. Both original and mocked classes will inherit from their virtual base class. For example, in our case the mocked class MockDictionary and the original class SqliteDictionary both inherit from the interface Dictionary.
+* Google Mock requires a virtual implementation of the class to mock. Both original and mocked classes will inherit from their virtual base class. For example, in our case the mocked class `MockDictionary` and the original class `SqliteDictionary` both inherit from the `Dictionary` interface.
 
 ## Descriptions of the development (and testing) of the most interesting parts
 Initially the subject of our project was a preprocessing tool for natural language processing. We changed almost completely the project due to give more sense to the application of a database and in order to have a more concrete goal.
 
-One of the most difficult parts to test was the main because it has a lot of logic branches. We delegates much of the responsabilities of the main to the ArgumentParser class.
+One of the most difficult parts to test was the main because it has a lot of logic branches. We delegates much of the responsabilities of the main to the `ArgumentParser` class.
 
-[//]: # (At some point during the development of this project, there was a folder `./tests/resources` that contained examples of text files. They allowed us to test Trainer and Classifier classes, but we understood that with a mock object on the text files we would achieve a more isolated unit-tests for both Trainer and Classifier classes.)
+[//]: # (At some point during the development of this project, there was a folder `./tests/resources` that contained examples of text files. They allowed us to test `Trainer` and `Classifier` classes, but we understood that with a mock object on the text files we would achieve a more isolated unit-tests for both `Trainer` and `Classifier` classes.)
 
 ## Explanation of some of the tools used
 
@@ -110,19 +109,19 @@ LGTM processes the contents of software development projects whose source code i
 If the project you're interested in isn't already on LGTM, simply log in and [add it](https://lgtm.com/help/lgtm/adding-projects)  directly from your Project lists page. In this way you enable automated code review for your project's pull requests.
 
 ### CodeCov
-[Codecov](https://codecov.io/) takes coverage to the next level. Unlike open source and paid products, Codecov focuses on integration and promoting healthy pull requests. Codecov delivers or "injects" coverage metrics directly into the modern workflow to promote more code coverage, especially in pull requests where new features and bug fixes commonly occur.
+[Codecov](https://codecov.io/) provides an online tool to visualize automatically code coverage report(s) easly. Codecov delivers or "injects" coverage metrics directly into the modern workflow to promote more code coverage, especially in pull requests where new features and bug fixes commonly occur.
 
 We use CodeCov following these simple steps:
 
-* Sign up on codecov.io and link our GitHub.com account.
-* Once linked, Codecov will automatically sync all the repositories to which you have access
-* Select our repository at https://github.com/ceccoemi/yasa
-* Run our normal test suite to generate code coverage reports through Travis CI
-* Use in .travis.yml the bash uploader to upload our coverage report(s) to Codecov.
+* sign up on codecov.io and link our GitHub.com account;
+* once linked, Codecov will automatically sync all the repositories to which you have access;
+* select our repository at [https://github.com/ceccoemi/yasa](https://github.com/ceccoemi/yasa);
+* run our normal test suite to generate code coverage reports through Travis CI;
+* use in `.travis.yml` the bash uploader to upload our coverage report(s) to Codecov.
 
-In .travis.yml the bash uploader is the following script command:
+In `.travis.yml` the bash uploader is the following script command:
 
-    - wget -S -O - https://codecov.io/bash | bash
+    wget -S -O - https://codecov.io/bash | bash
 
 ### Google Test
 
@@ -234,3 +233,84 @@ As you can see, the usage is very similar to JUnit. You can also create a *Test 
     }
 
 Here the fixture class is `SqliteHandlerDbTest`, which stores the database file name. A temporary file is created in `SetUp` before the execution of each test and it is destroyed in `TearDown` when each test ends.
+
+
+### Google Mock
+
+[gMock](https://github.com/google/googletest/blob/master/googlemock/README.md) is a library (sometimes we also call it a "framework" to make it sound cool) for creating mock classes and using them. It does to C++ what jMock/EasyMock does to Java (well, more or less). gMock is bundled with googletest.
+
+#### Usage
+
+First of all we have to define an interface and we took a piece of the `Dictionary` interface from our project as an example:
+
+    #pragma once
+    
+    #include <string>
+
+    class Dictionary {
+     public:
+      virtual ~Dictionary() {}
+      virtual int positivesCount(const std::string& word);
+      virtual int negativesCount(const std::string& word);
+      ...
+    };
+
+(Note that the destructor of `Dictionary` must be virtual, as is the case for all classes you intend to inherit from - otherwise the destructor of the derived class will not be called when you delete an object through a base pointer, and you'll get corrupted program states like memory leaks.)
+
+Your program will normally use a real implementation of this interface. In tests, you can use a mock implementation instead. This allows you to easily check what drawing primitives your program is calling, with what arguments, and in which order. Tests written this way are much more robust (they won't break because your new machine does anti-aliasing differently), easier to read and maintain, and run much, much faster.
+
+Using the Dictionary interface, here are the simple steps you need to follow:
+
+* derive MockDictionary from Dictionary;
+* take a virtual function from Dictionary;
+* in the `public:` section of the child class, write `MOCK_METHOD()`;
+* take the function signature, cut-and-paste it into the macro, and add two commas:
+    - one between the return type and the name,
+    - another between the name and the argument list;
+* if you're mocking a const method, add a 4th parameter containing (const) (the parentheses are required);
+* Repeat until all virtual functions you want to mock are done.
+
+After the process, you should have something like:
+
+    #include "gmock/gmock.h"
+    #include "Dictionary.h"
+    #include <string>
+    
+    class MockDictionary : public Dictionary {
+      public:
+        MOCK_METHOD(int, positivesCount, (const std::string& word), (override));
+        MOCK_METHOD(int, negativesCount, (const std::string& word), (override));
+        ...
+    };
+
+Once you have a mock class, using it is easy. The typical work flow is:
+1. import the gMock names from the testing namespace such that you can use them unqualified;
+2. create some mock objects;
+3. specify your expectations on them;
+4. exercise some code that uses the mocks;
+5. when a mock is destructed, gMock will automatically check whether all expectations on it have been satisfied.
+
+Here's an example:
+
+    #include "path/to/MockDictionary.h"
+    #include "Classifier.h"
+    #include "gmock/gmock.h"
+    #include "gtest/gtest.h"
+    #include <vector>
+    #include <string>
+    
+    using ::testing::_;  // #1
+    
+    TEST(Classifier, ClassifiyWithNoWords) {
+      MockDictionary dictionary;  // #2
+      EXPECT_CALL(dictionary, positivesCount(_)).Times(0);  // #3
+      EXPECT_CALL(dictionary, negativesCount(_)).Times(0);  // #3
+            
+      Classifier classifier(&dictionary);  // #4
+      std::vector<std::string> words{};
+      classifier.classify(words);  // #5
+    }
+    
+The key to using a mock object successfully is to set the right expectations on it. If you set the expectations too strict, your test will fail as the result of unrelated changes. If you set them too loose, bugs can slip through. You want to do it just right such that your test can catch exactly the kind of bugs you intend it to catch. gMock provides the necessary means for you to do it "just right".
+
+***
