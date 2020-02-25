@@ -18,22 +18,14 @@ COPY . .
 
 # Debug build with warnings, tests and code coverage
 WORKDIR ${YASA_ROOT_DIR}/debug-build
-RUN cmake \
-        -j$(nproc) \
-        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON /usr/lib/llvm-9/ \
-        -DCMAKE_BUILD_TYPE=DEBUG .. && \
-    ln -s $PWD/compile_commands.json /usr/lib/llvm-9/ && \
-    clang-tidy-9 \
-        ../src/*.cc \
-        -quiet \
-        -checks=cppcoreguidelines*,modernize-*,-modernize-use-trailing-return-type,misc-*,performance-*,readability-* && \
+RUN cmake -j$(nproc) -DCMAKE_BUILD_TYPE=DEBUG .. && \
     make -j$(nproc) RunAllTests && \
     tests/RunAllTests && \
     lcov --capture --directory . --output-file coverage.info && \
     lcov --remove coverage.info \
         '/usr/include/*' \
         '/usr/local/include/*' \
-        '/usr/local/src/yasa/tests/*' \
+        ${YASA_ROOT_DIR}'/tests/*' \
         --quiet --output-file coverage.info && \
     lcov --list coverage.info
 
@@ -45,4 +37,6 @@ RUN cmake -j$(nproc) -DCMAKE_BUILD_TYPE=Release .. && \
     make install && \
     yasa --version
 
-WORKDIR ${YASA_ROOT_DIR}
+WORKDIR /
+
+ENTRYPOINT ["yasa"]

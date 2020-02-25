@@ -9,7 +9,8 @@ install: true
 
 script:
   - docker build -t yasa .
-  - docker run --detach --interactive --name yasa-container yasa /bin/bash
+  # execute the container to get the coverage report
+  - docker run --detach --interactive --name yasa-container yasa --version
   - docker cp yasa-container:/usr/local/src/yasa/debug-build/coverage.info .
   - wget -S -O - https://codecov.io/bash | bash
-  - docker exec yasa-container /bin/bash -c "yasa train -n example/neg -p example/pos; yasa classify -f example/neg.txt; yasa classify -f example/pos.txt"
+  - ./run_example.sh  # integration test
