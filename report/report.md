@@ -234,10 +234,9 @@ As you can see, the usage is very similar to JUnit. You can also create a *Test 
 
 Here the fixture class is `SqliteHandlerDbTest`, which stores the database file name. A temporary file is created in `SetUp` before the execution of each test and it is destroyed in `TearDown` when each test ends.
 
-
 ### Google Mock
 
-[gMock](https://github.com/google/googletest/blob/master/googlemock/README.md) is a library (sometimes we also call it a "framework" to make it sound cool) for creating mock classes and using them. It does to C++ what jMock/EasyMock does to Java (well, more or less). gMock is bundled with googletest.
+[gMock](https://github.com/google/googletest/blob/master/googlemock/README.md) is a C++ library for creating mock classes and using them. gMock is bundled with Google Test and don't need to download it if you have Google Test. However, you must link gMock through CMake among the tests to use it.
 
 #### Usage
 
@@ -255,20 +254,16 @@ First of all we have to define an interface and we took a piece of the `Dictiona
       ...
     };
 
-(Note that the destructor of `Dictionary` must be virtual, as is the case for all classes you intend to inherit from - otherwise the destructor of the derived class will not be called when you delete an object through a base pointer, and you'll get corrupted program states like memory leaks.)
+Note: the destructor of `Dictionary` must be virtual, as is the case for all classes you intend to inherit from. Otherwise the destructor of the derived class will not be called when you delete an object through a base pointer, and you'll get corrupted program states like memory leaks.
 
-Your program will normally use a real implementation of this interface. In tests, you can use a mock implementation instead. This allows you to easily check what drawing primitives your program is calling, with what arguments, and in which order. Tests written this way are much more robust (they won't break because your new machine does anti-aliasing differently), easier to read and maintain, and run much, much faster.
+Using the `Dictionary` interface, here are the simple steps you need to follow to build a `MockDictionary`:
 
-Using the Dictionary interface, here are the simple steps you need to follow:
-
-* derive MockDictionary from Dictionary;
+* derive `MockDictionary` from `Dictionary`;
 * take a virtual function from Dictionary;
 * in the `public:` section of the child class, write `MOCK_METHOD()`;
-* take the function signature, cut-and-paste it into the macro, and add two commas:
-    - one between the return type and the name,
-    - another between the name and the argument list;
-* if you're mocking a const method, add a 4th parameter containing (const) (the parentheses are required);
-* Repeat until all virtual functions you want to mock are done.
+* insert in the first argument the identifier of the method to mock;
+* insert in the second argument <return-type>(<argument-type> <argument-identifier>, ...);
+* repeat until all virtual functions you want to mock are done.
 
 After the process, you should have something like:
 
@@ -278,8 +273,8 @@ After the process, you should have something like:
     
     class MockDictionary : public Dictionary {
       public:
-        MOCK_METHOD(int, positivesCount, (const std::string& word), (override));
-        MOCK_METHOD(int, negativesCount, (const std::string& word), (override));
+        MOCK_METHOD(positivesCount, int(const std::string& word));
+        MOCK_METHOD(negativesCount, int(const std::string& word));
         ...
     };
 
@@ -292,7 +287,7 @@ Once you have a mock class, using it is easy. The typical work flow is:
 
 Here's an example:
 
-    #include "path/to/MockDictionary.h"
+    #include "MockDictionary.h"
     #include "Classifier.h"
     #include "gmock/gmock.h"
     #include "gtest/gtest.h"
@@ -306,11 +301,9 @@ Here's an example:
       EXPECT_CALL(dictionary, positivesCount(_)).Times(0);  // #3
       EXPECT_CALL(dictionary, negativesCount(_)).Times(0);  // #3
             
-      Classifier classifier(&dictionary);  // #4
+      Classifier classifier(&dictionary);
       std::vector<std::string> words{};
-      classifier.classify(words);  // #5
-    }
-    
-The key to using a mock object successfully is to set the right expectations on it. If you set the expectations too strict, your test will fail as the result of unrelated changes. If you set them too loose, bugs can slip through. You want to do it just right such that your test can catch exactly the kind of bugs you intend it to catch. gMock provides the necessary means for you to do it "just right".
+      classifier.classify(words);  // #4
+    }  // #5
 
 ***
