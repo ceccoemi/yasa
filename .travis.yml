@@ -13,4 +13,4 @@ script:
   - docker run --detach --interactive --name yasa-container yasa --version
   - docker cp yasa-container:/usr/local/src/yasa/debug-build/coverage.info .
   - wget -S -O - https://codecov.io/bash | bash
-  - ./run_example.sh
+  - ./run_example.sh  # integration test

@@ -25,7 +25,7 @@ RUN cmake -j$(nproc) -DCMAKE_BUILD_TYPE=DEBUG .. && \
     lcov --remove coverage.info \
         '/usr/include/*' \
         '/usr/local/include/*' \
-        '/usr/local/src/yasa/tests/*' \
+        ${YASA_ROOT_DIR}'/tests/*' \
         --quiet --output-file coverage.info && \
     lcov --list coverage.info
 

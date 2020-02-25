@@ -1,3 +1,4 @@
+#include <experimental/filesystem>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -17,32 +18,22 @@ auto trainFunc = [](auto negDir, auto posDir) {
     SqliteHandler handler("yasa.db");
     SqliteDictionary<SqliteHandler> dictionary(&handler);
     Trainer trainer(&dictionary);
-    int counter = 0;
-    for (const auto& entry : fs::directory_iterator(negDir)) {
+    for (const auto &entry : fs::directory_iterator(negDir)) {
       TextFileReader reader(entry.path());
       std::string text(reader.read());
       std::vector<std::string> words = extractWords(text);
       trainer.train(words, Sentiment::negative);
-      ++counter;
-      if (counter % 10 == 0) {
-        std::cout << "Processed " << counter << " neg files\n";
-      }
     }
   }
   if (!posDir.empty()) {
     SqliteHandler handler("yasa.db");
     SqliteDictionary<SqliteHandler> dictionary(&handler);
     Trainer trainer(&dictionary);
-    int counter = 0;
-    for (const auto& entry : fs::directory_iterator(posDir)) {
+    for (const auto &entry : fs::directory_iterator(posDir)) {
       TextFileReader reader(entry.path());
       std::string text(reader.read());
       std::vector<std::string> words = extractWords(text);
       trainer.train(words, Sentiment::positive);
-      ++counter;
-      if (counter % 10 == 0) {
-        std::cout << "Processed " << counter << " pos files\n";
-      }
     }
   }
   return "Training done.";
@@ -56,13 +47,15 @@ auto classifyFunc = [](auto fileName) {
   std::string text(reader.read());
   std::vector<std::string> words = extractWords(text);
   Sentiment sentiment = classifier.classify(words);
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
   return sentiment == Sentiment::positive ? "Positive" : "Negative";
 };
 
-int main(int argc, const char* argv[]) {
+int main(int argc, const char *argv[]) {
   ArgumentParser argumentParser(argc,
                                 std::vector<std::string>(argv, argv + argc),
                                 trainFunc, classifyFunc);
-  std::cout << argumentParser.main() << '\n';
-  return 0;
+  auto out = argumentParser.main();
+  std::cout << out.second << '\n';
+  return out.first;
 }

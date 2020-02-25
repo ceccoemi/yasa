@@ -11,15 +11,17 @@ fi
 
 docker run \
     --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
-    --mount type=bind,source="$PWD"/example,target=/example,readonly \
-    --rm --tty yasa train -n example/neg -p example/pos
+    --mount type=bind,source="$PWD"/example/neg,target=/neg,readonly \
+    --mount type=bind,source="$PWD"/example/pos,target=/pos,readonly \
+    --rm --tty yasa train -n neg
 
 docker run \
     --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
-    --mount type=bind,source="$PWD"/example,target=/example,readonly \
-    --rm --tty yasa classify -f example/neg.txt
+    --mount type=bind,source="$PWD"/example/neg.txt,target=/neg.txt,readonly \
+    --rm --tty yasa classify -f neg.txt
 
 docker run \
     --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
-    --mount type=bind,source="$PWD"/example,target=/example,readonly \
-    --rm --tty yasa classify -f example/pos.txt
+    --mount type=bind,source="$PWD"/example/pos.txt,target=/pos.txt,readonly \
+    --rm --tty yasa classify -f pos.txt
+

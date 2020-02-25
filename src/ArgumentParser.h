@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <string>
+#include <utility>
 #include <vector>
 
 class ArgumentParser {
@@ -17,7 +18,7 @@ class ArgumentParser {
           trainFunc,
       std::function<std::string(const std::string& fileName)> classifyFunc);
 
-  std::string main();
+  std::pair<int, std::string> main();
 
  private:
   int numArgs;
@@ -36,6 +37,6 @@ class ArgumentParser {
   void handleTrainArguments();
   void handleClassifyArgument();
 
-  enum MainBehaviour { train, classify, displayMessage };
+  enum MainBehaviour { train, classify, displayVersion, displayMessage };
   MainBehaviour mainBehaviour;
 };
