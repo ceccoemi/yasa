@@ -9,7 +9,7 @@ Command line tool to perform sentiment analysis written in C++ with Docker.
 
 ## Build with Docker
 
-yasa can be built as a Docker image. The `Dockerfile` located in the project root directory takes care of all the steps to build the image. You only have to cd to the root directory and run:
+yasa can be built as a Docker image. The `Dockerfile` located in the project root directory takes care of all the steps to build the image. You only have to `cd` to the root directory and run:
 
     $ docker build -t yasa .
 
@@ -19,7 +19,7 @@ The Docker image can be directly executed with the `Docker run` command.
 
 The following command is an example of usage:
 
-    docker run \
+    $ docker run \
         --mount type=bind,source=<path-to-yasa.db>,target=/yasa.db \
         --mount type=bind,source=<path-to-pos-dir>,target=/<pos-dir>,readonly \
         --mount type=bind,source=<path-to-neg-dir>,target=/<neg-dir>,readonly \
@@ -27,7 +27,7 @@ The following command is an example of usage:
 
 After trained, the model is able to classify a text file using the following command:
 
-    docker run \
+    $ docker run \
         --mount type=bind,source=<path-to-yasa.db>,target=/yasa.db \
         --mount type=bind,source=<path-to-file-to-classify>,target=/<file-to-classify>,readonly \
         --rm --tty yasa classify -f <file-to-classify>
@@ -36,7 +36,7 @@ The `yasa.db` file must exists (you can create it with `$ touch yasa.db`), moreo
 
 For example in order to train the underneath model with all the text files in the directories `example/pos` and `example/neg`, you can use the following command (it can take about minutes 5 minutes):
 
-    docker run \
+    $ docker run \
         --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
         --mount type=bind,source="$PWD"/example/pos,target=/pos,readonly \
         --mount type=bind,source="$PWD"/example/neg,target=/neg,readonly \
@@ -44,11 +44,11 @@ For example in order to train the underneath model with all the text files in th
 
 If you want to classify e.g. the `example/neg.txt` file with the model trained just before, you can use the following command:
 
-    docker run \
+    $ docker run \
         --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
         --mount type=bind,source="$PWD"/example/neg.txt,target=/neg.txt,readonly \
         --rm --tty yasa classify -f neg.txt
 
-These last three command can be executed simply launching the shell script `run_example.sh`.
+These last three command can be executed simply by running the shell script `run_example.sh`.
 
 ## Build on local system (tested only in Ubuntu 18.04)
