@@ -8,7 +8,7 @@
 2. [Applied techniques and frameworks](#applied-techniques-and-frameworks)
 3. [Design and implementation choices](#design-and-implementations-choices)
 4. [Some of the problems encountered and how we have solved them](#possible-problems-encountered-and-how-you-solve-them)
-5. [Descriptions of the development \(and testing\) of the most interesting parts](#descriptions-of-the-development-\(and testing\)-of-the-most-interesting-parts)
+5. [Descriptions of the development and testing of the most interesting parts](#descriptions-of-the-development-and-testing-of-the-most-interesting-parts)
 6. [Explanation of some of the tools used](#explanation-of-some-of-the-tools-used)
 
 ## What we have implemented
@@ -92,12 +92,12 @@ The management of SQLite database was one of the biggest challenges because its 
 
 We initially missed the concept of isolation for unit-tests: we realized it when a bug in a component caused tests of other components to fail. Then Google Mock came into rescue!
 
-## Descriptions of the development (and testing) of the most interesting parts
+## Descriptions of the development and testing of the most interesting parts
 Initially the subject of our project was a preprocessing tool for natural language processing. We changed almost completely the project due to give more sense to the application of a database and in order to have a more concrete goal.
 
-One of the most difficult parts to test was the main because it has a lot of logic branches. We delegates much of the responsibilities of the main to the `ArgumentParser` class.
+One of the most difficult parts to test was the main because it has a lot of logic branches. We delegate much of the responsibilities of the main to the `ArgumentParser` class.
 
-[//]: # (At some point during the development of this project, there was a folder `./tests/resources` that contained examples of text files. They allowed us to test `Trainer` and `Classifier` classes, but we understood that with a mock object on the text files we would achieve a more isolated unit-tests for both `Trainer` and `Classifier` classes.)
+At some point during the development of this project, there was a folder `tests/resources` that contained examples of text files. It allowed us to test `Trainer` and `Classifier` classes, but we understood that with a mock object on the text files we would achieve a more isolated unit-tests for both `Trainer` and `Classifier` classes.
 
 ## Explanation of some of the tools used
 
