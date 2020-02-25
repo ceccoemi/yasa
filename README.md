@@ -53,7 +53,7 @@ These last three command can be executed simply by running the shell script `run
 
 ## Build on local system (tested only in Ubuntu 18.04)
 
-yasa can be built also in the local system. We have only tested it in Ubuntu 18.04. You need the following dependencies (which are easily installable in Ubuntu with `apt-get`):
+yasa can also be built in the local system. We have only tested it in Ubuntu 18.04. You need the following dependencies (which are easily installable in Ubuntu with `apt-get`):
 
 * CMake >= 3.10.2
 * Google Test 1.8
@@ -63,22 +63,25 @@ yasa can be built also in the local system. We have only tested it in Ubuntu 18.
 * gcov 7.4.0
 * lcov 1.13
 
-The build steps are quite straightforward.
-
 To build yasa and run all the tests with a coverage report:
 
     $ mkdir build
     $ cd build
     $ cmake -j$(nproc) -DCMAKE_BUILD_TYPE=DEBUG ..
+    ...
     $ make -j$(nproc) RunAllTests
+    ...
     $ tests/RunAllTests
+    ...
     $ lcov --capture --directory . --output-file coverage.info
+    ...
     $ lcov --remove coverage.info \
         '/usr/include/*' \
         '/usr/local/include/*' \
         $PWD'/tests/*' \
         --quiet --output-file coverage.info
     $ lcov --list coverage.info
+    ...
 
 To build yasa and install it in the system:
 
