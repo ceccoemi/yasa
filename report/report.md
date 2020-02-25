@@ -99,6 +99,8 @@ One of the most difficult parts to test was the main because it has a lot of log
 
 At some point during the development of this project, there was a folder `tests/resources` that contained examples of text files. It allowed us to test `Trainer` and `Classifier` classes, but we understood that with a mock object on the text files we would achieve a more isolated unit-tests for both `Trainer` and `Classifier` classes.
 
+The shell script `run_example.sh` can be considered as **integration test**, because it executes both the training and classifying phases with real files and with a real database. Since the training process can take time, it is executed in Travis CI.
+
 ## Explanation of some of the tools used
 
 ### LGTM
