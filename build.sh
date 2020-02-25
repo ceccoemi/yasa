@@ -14,6 +14,8 @@ if [ -e ./build ]; then
     rm -rf ./build;
 fi
 
+PROJECT_ROOT_DIR=$PWD
+
 mkdir build && cd build
 conan install ..
 
@@ -24,11 +26,12 @@ make -j$(nproc) RunAllTests
 bin/RunAllTests
 
 lcov --capture --directory . --output-file coverage.info
-#lcov --remove coverage.info \
-#        '/usr/include/*' \
-#        '/usr/local/include/*' \
-#        '/usr/local/src/yasa/tests/*' \
-#        --quiet --output-file coverage.info
+lcov --remove coverage.info \
+        '/usr/include/*' \
+        '/usr/local/include/*' \
+        $HOME'/.conan/data/*' \
+        $PROJECT_ROOT_DIR'/tests/*' \
+        --quiet --output-file coverage.info
 lcov --list coverage.info
 
 exit 0
