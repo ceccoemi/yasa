@@ -13,7 +13,7 @@ docker run \
     --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
     --mount type=bind,source="$PWD"/example/neg,target=/neg,readonly \
     --mount type=bind,source="$PWD"/example/pos,target=/pos,readonly \
-    --rm --tty yasa train -n neg
+    --rm --tty yasa train -n neg -p pos
 
 docker run \
     --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \

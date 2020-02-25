@@ -95,7 +95,7 @@ std::pair<int, std::string> ArgumentParser::main() {
   parseArgs();
   switch (mainBehaviour) {
     case MainBehaviour::train:
-      return {1, trainFunc(negativesDir, positivesDir)};
+      return {0, trainFunc(negativesDir, positivesDir)};
     case MainBehaviour::classify:
       return {0, classifyFunc(fileToClassify)};
     case MainBehaviour::displayVersion:
