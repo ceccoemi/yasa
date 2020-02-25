@@ -34,7 +34,7 @@ After trained, the model is able to classify a text file using the following com
 
 The `yasa.db` file must exists (you can create it with `$ touch yasa.db`), moreover files and directories used must be bound to the container, which can be achieved with Docker volumes or Docker bind mounts. The training phase will update this file `yasa.db`, which can be stored and used later for the classification phase or for another training.
 
-For example in order to train the underneath model with all the text files in the directories `example/pos` and `example/neg`, you can use the following command (it can take about minutes 5 minutes):
+For example in order to train the underneath model with all the text files in the directories `example/pos` and `example/neg`, you can use the following command (it can take about 5 minutes):
 
     $ docker run \
         --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
@@ -52,3 +52,48 @@ If you want to classify e.g. the `example/neg.txt` file with the model trained j
 These last three command can be executed simply by running the shell script `run_example.sh`.
 
 ## Build on local system (tested only in Ubuntu 18.04)
+
+yasa can be built also in the local system. We have only tested it in Ubuntu 18.04. You need the following dependencies (which are easily installable in Ubuntu with `apt-get`):
+
+* CMake >= 3.10.2
+* Google Test 1.8
+* Google Mock 1.8
+* SQLite 3.22 (libsqlite-dev in Ubuntu)
+* clang-tidy >= 9
+* gcov 7.4.0
+* lcov 1.13
+
+The build steps are quite straightforward.
+
+To build yasa and run all the tests with a coverage report:
+
+    $ mkdir build
+    $ cd build
+    $ cmake -j$(nproc) -DCMAKE_BUILD_TYPE=DEBUG ..
+    $ make -j$(nproc) RunAllTests
+    $ tests/RunAllTests
+    $ lcov --capture --directory . --output-file coverage.info
+    $ lcov --remove coverage.info \
+        '/usr/include/*' \
+        '/usr/local/include/*' \
+        $PWD'/tests/*' \
+        --quiet --output-file coverage.info
+    $ lcov --list coverage.info
+
+To build yasa and install it in the system:
+
+    $ cmake -j$(nproc) -DCMAKE_BUILD_TYPE=Release ..
+    $ make -j$(nproc) yasa
+    $ cd src
+    $ sudo make install
+
+To check if yasa is correctly installed run:
+
+    $ yasa --version
+
+The main advantage with a local build is that you don't have to manage the data with Docker volumes or similar, you can directly run yasa on the local files and directories. For example:
+
+    $ yasa train -n example/neg -p example/pos
+    $ yasa classify -f example/pos.txt
+    ...
+    $ yasa classify -f example/neg.txt
