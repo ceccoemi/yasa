@@ -71,6 +71,7 @@ void ArgumentParser::handleClassifyArgument() {
 void ArgumentParser::handleFirstArgument() {
   if ((argValues[1] == "-v") || (argValues[1] == "--version")) {
     message = "yasa version " + std::string(VERSION);
+    mainBehaviour = MainBehaviour::displayVersion;
   } else if (argValues[1] == "train") {
     message = trainUsageMessage;
     handleTrainArguments();
@@ -90,14 +91,16 @@ void ArgumentParser::parseArgs() {
   }
 }
 
-std::string ArgumentParser::main() {
+std::pair<int, std::string> ArgumentParser::main() {
   parseArgs();
   switch (mainBehaviour) {
     case MainBehaviour::train:
-      return trainFunc(negativesDir, positivesDir);
+      return {0, trainFunc(negativesDir, positivesDir)};
     case MainBehaviour::classify:
-      return classifyFunc(fileToClassify);
+      return {0, classifyFunc(fileToClassify)};
+    case MainBehaviour::displayVersion:
+      return {0, message};
     default:
-      return message;
+      return {1, message};
   }
 }
