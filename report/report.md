@@ -12,7 +12,7 @@
 6. [Explanation of some of the tools used](#explanation-of-some-of-the-tools-used)
 
 ## What we have implemented
-We implemented [yasa](https://github.com/ceccoemi/yasa) (Yet Another Sentiment Analyser), a containerized command line tool that make easy the application of Sentiment Analysis.
+We implemented [yasa](https://github.com/ceccoemi/yasa) (Yet Another Sentiment Analyser), a containerized command line tool that makes easy the application of Sentiment Analysis.
 **yasa** allows to train an underneath model of sentiment analysis with text files labeled as positives or negatives. After the training phase the model is able to predict the label of an unseen text file into positive/negative.
 
 The management of this model is done through a command line interface (CLI). The model can be trained by feeding it with a folder containing positives text and/or folder containing negatives text. The following command is an example of usage:
@@ -78,7 +78,7 @@ The training is handled by the `Trainer` class that:
 2. tokenizes the words previously found with the `extractWords` function (in `preprocessing.cc` source code file);
 3. updates the underneath SQLite database using the `SqliteDictionary` class.
 
-We wrapped the C-written API of SQLite in the class `SqliteHandler` to make easier the usage.
+We wrapped the C-written API of SQLite with the class `SqliteHandler` to make the usage easier.
 The classifying is handled by a `Classifier` class that:
 
 1. reads the given text file with `TextFileReader`;
@@ -140,7 +140,7 @@ Here are the commands that we run to generate the coverage report after the exec
 
 To generate a report file called `coverage.info` related to the whole project:
 
-    $ lcov --capture --directory . --output-file coverage.info && \
+    $ lcov --capture --directory . --output-file coverage.info
 
 This command includes in the report all the source files covered by the previous execution including the tests and the standard library. The following command excludes the source files that we are not interested to:
 
@@ -148,11 +148,11 @@ This command includes in the report all the source files covered by the previous
         '/usr/include/*' \
         '/usr/local/include/*' \
         ${YASA_ROOT_DIR}'/tests/*' \
-        --quiet --output-file coverage.info && \
+        --quiet --output-file coverage.info
 
 Finally, to display the coverage results:
 
-    $ lcov --list coverage.info && \
+    $ lcov --list coverage.info
 
 ### CodeCov
 [Codecov](https://codecov.io/) provides an online tool to visualize automatically code coverage report(s) easily. Codecov delivers or "injects" coverage metrics directly into the modern workflow to promote more code coverage, especially in pull requests where new features and bug fixes commonly occur.
