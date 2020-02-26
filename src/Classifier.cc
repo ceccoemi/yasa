@@ -5,15 +5,13 @@
 Classifier::Classifier(Dictionary* dictionary) : dictionary(dictionary) {}
 
 Sentiment Classifier::classify(const std::vector<std::string>& words) {
-  auto numPos = static_cast<double>(dictionary->positivesCountUniques() + 1);
-  auto numNeg = static_cast<double>(dictionary->negativesCountUniques() + 1);
+  double numPos = dictionary->positivesCountUniques() + 1.0;
+  double numNeg = dictionary->negativesCountUniques() + 1.0;
   double tot = numPos + numNeg;
   double counter = 0;
   for (auto& word : words) {
-    counter +=
-        static_cast<double>(dictionary->positivesCount(word)) * (tot / numPos);
-    counter -=
-        static_cast<double>(dictionary->negativesCount(word)) * (tot / numNeg);
+    counter += (tot / numPos) * dictionary->positivesCount(word);
+    counter -= (tot / numNeg) * dictionary->negativesCount(word);
   }
   return counter > 0 ? Sentiment::positive : Sentiment::negative;
 }
