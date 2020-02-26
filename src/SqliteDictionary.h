@@ -9,6 +9,8 @@
 template <class Handler>  // template needed for mocking purposes
 class SqliteDictionary : public Dictionary {
  public:
+  SqliteDictionary() : db(nullptr) {}
+
   SqliteDictionary(Handler* db) : db(db) {
     db->query("CREATE TABLE IF NOT EXISTS positives(word VARCHAR(30));");
     db->query("CREATE TABLE IF NOT EXISTS negatives(word VARCHAR(30));");

@@ -12,3 +12,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra")
 
 add_subdirectory(src)
 add_subdirectory(tests)
+if(ENABLE_INTEGRATION_TESTS)
+	add_subdirectory(integration-tests)
+endif()
+
