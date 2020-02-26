@@ -1,5 +1,6 @@
 #include <ArgumentParser.h>
 #include <gtest/gtest.h>
+#include <gtest/internal/gtest-internal.h>
 #include <version.h>
 
 #include <functional>

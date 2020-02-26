@@ -1,6 +1,6 @@
 #include "Classifier.h"
 
-#include <iostream>
+#include "Dictionary.h"
 
 Classifier::Classifier(Dictionary* dictionary) : dictionary(dictionary) {}
 
