@@ -99,7 +99,7 @@ One of the most difficult parts to test was the main because it has a lot of log
 
 At some point during the development of this project, there was a folder `tests/resources` that contained examples of text files. It allowed us to test `Trainer` and `Classifier` classes, but we understood that with a mock object on the text files we would achieve a more isolated unit-tests for both `Trainer` and `Classifier` classes.
 
-The shell script `run_example.sh` can be considered as **integration test**, because it executes both the training and classifying phases with real files and with a real database. Since the training process can take time, it is executed in Travis CI.
+The shell script `run_example.sh` can be considered as an **end-to-end test**, because it executes both the training and classifying phases with real files and with a real database. Since the training process can take time, it is executed in Travis CI.
 
 ## Explanation of some of the tools used
 
@@ -110,6 +110,28 @@ The shell script `run_example.sh` can be considered as **integration test**, bec
 LGTM processes the contents of software development projects whose source code is stored in public Git repositories hosted on such as GitHub.com and among the currently supported languages there is C++.
 
 If the project you're interested in isn't already on LGTM, simply log in and [add it](https://lgtm.com/help/lgtm/adding-projects)  directly from your Project lists page. In this way you enable automated code review for your project's pull requests.
+
+### GCOV / LCOV
+
+In order to get code coverage from C++ programs you have to add the compile flag `--coverage`. This flag allows [GCOV](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html) to create `.gcda` e `.gcno` files after the execution of the program. [LCOV](https://github.com/linux-test-project/lcov) is an extension of GCOV which makes easy the creation of human-friendly reports.
+
+Here are the commands that we run to generate the coverage report after the execution of the unit tests.
+
+To generate a report file called `coverage.info` related to the whole project:
+
+    $ lcov --capture --directory . --output-file coverage.info && \
+
+This command includes in the report all the source files covered by the previous execution including the tests and the standard library. The following command excludes the source files that we are not interested to:
+
+    $ lcov --remove coverage.info \
+        '/usr/include/*' \
+        '/usr/local/include/*' \
+        ${YASA_ROOT_DIR}'/tests/*' \
+        --quiet --output-file coverage.info && \
+
+Finally, to display the coverage results:
+
+    $ lcov --list coverage.info && \
 
 ### CodeCov
 [Codecov](https://codecov.io/) provides an online tool to visualize automatically code coverage report(s) easily. Codecov delivers or "injects" coverage metrics directly into the modern workflow to promote more code coverage, especially in pull requests where new features and bug fixes commonly occur.
