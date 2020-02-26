@@ -101,6 +101,27 @@ At some point during the development of this project, there was a folder `tests/
 
 The shell script `run_example.sh` can be considered as an **end-to-end test**, because it executes both the training and classifying phases with real files and with a real database. Since the training process can take time, it is executed in Travis CI.
 
+Test pyramid:
+
+```
+               /\
+              /  \
+             /    \
+            /      \
+           /        \
+          /    1     \
+         / end-to-end \
+        /==============\
+       /                \
+      /        16        \
+     / integration tests  \
+    /======================\
+   /                        \
+  /            50            \
+ /         unit tests         \
+/==============================\
+```
+
 ## Explanation of some of the tools used
 
 ### LGTM
