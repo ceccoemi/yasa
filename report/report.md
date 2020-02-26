@@ -260,9 +260,11 @@ Using the `Dictionary` interface, here are the simple steps you need to follow t
 
 * derive `MockDictionary` from `Dictionary`;
 * take a virtual function from Dictionary;
-* in the `public:` section of the child class, write `MOCK_METHOD()`;
-* insert in the first argument the identifier of the method to mock;
-* insert in the second argument <return-type>(<argument-type> <argument-identifier>, ...);
+* in the `public:` section of the child class, write `MOCK_METHODn()`;
+* `MOCK_METHODn()`, has two parameters described in the following two steps:
+	* first argument: the identifier of the method to mock;
+	* second argument: `<return-type>(<argument-type> <argument-identifier>, ...)`;
+* change `n` in `MOCK_METHODn()` based on the number of arguments of the function to mock;
 * repeat until all virtual functions you want to mock are done.
 
 After the process, you should have something like:
@@ -273,8 +275,8 @@ After the process, you should have something like:
     
     class MockDictionary : public Dictionary {
       public:
-        MOCK_METHOD(positivesCount, int(const std::string& word));
-        MOCK_METHOD(negativesCount, int(const std::string& word));
+        MOCK_METHOD1(positivesCount, int(const std::string& word));
+        MOCK_METHOD1(negativesCount, int(const std::string& word));
         ...
     };
 
