@@ -2,6 +2,7 @@
 #include <Sentiment.h>
 #include <gmock/gmock-generated-function-mockers.h>
 #include <gmock/gmock-matchers.h>
+
 #include <string>
 
 class MockDictionary : public Dictionary {
@@ -14,9 +15,13 @@ class MockDictionary : public Dictionary {
 
   MOCK_METHOD0(positivesCount, int());
 
+  MOCK_METHOD0(positivesCountUniques, int());
+
   MOCK_METHOD1(positivesCount, int(const std::string& word));
 
   MOCK_METHOD0(negativesCount, int());
+
+  MOCK_METHOD0(negativesCountUniques, int());
 
   MOCK_METHOD1(negativesCount, int(const std::string& word));
 };

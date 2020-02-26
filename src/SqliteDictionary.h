@@ -34,6 +34,12 @@ class SqliteDictionary : public Dictionary {
     return std::stoi(result["COUNT(*)"].front());
   }
 
+  int positivesCountUniques() {
+    QueryResult result =
+        db->query("SELECT COUNT(DISTINCT word) FROM positives;");
+    return std::stoi(result["COUNT(DISTINCT word)"].front());
+  }
+
   int positivesCount(const std::string& word) {
     QueryResult result = db->query(
         "SELECT COUNT(*) FROM positives WHERE word = '" + word + "';");
@@ -43,6 +49,12 @@ class SqliteDictionary : public Dictionary {
   int negativesCount() {
     QueryResult result = db->query("SELECT COUNT(*) FROM negatives;");
     return std::stoi(result["COUNT(*)"].front());
+  }
+
+  int negativesCountUniques() {
+    QueryResult result =
+        db->query("SELECT COUNT(DISTINCT word) FROM negatives;");
+    return std::stoi(result["COUNT(DISTINCT word)"].front());
   }
 
   int negativesCount(const std::string& word) {
