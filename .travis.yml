@@ -13,5 +13,4 @@ script:
   - docker run --detach --interactive --name yasa-container yasa --version
   - docker cp yasa-container:/usr/local/src/yasa/debug-build/coverage.info .
   - wget -S -O - https://codecov.io/bash | bash
-  - ./run_example.sh  # end-to-end test
-    if: type IN (pull_request)
+  - if [ "$TRAVIS_PULL_REQUEST" ]; then ./run_example.sh; fi  # end-to-end test on PR
