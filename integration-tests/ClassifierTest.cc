@@ -1,6 +1,7 @@
 #include <Classifier.h>
 #include <Sentiment.h>
 #include <SqliteDictionary.h>
+#include <SqliteHandler.h>
 #include <gtest/gtest.h>
 
 #include <string>
