@@ -83,6 +83,25 @@ TEST(SqliteDictionaryTest, positivesCount) {
   ASSERT_EQ(dictionary.positivesCount(), 3);
 }
 
+TEST(SqliteDictionaryTest, positivesCountUniques) {
+  MockSqliteHandler handler;
+  EXPECT_CALL(handler, query(HasSubstr("CREATE"))).Times(2);
+  EXPECT_CALL(handler, query(HasSubstr("INSERT"))).Times(3);
+  EXPECT_CALL(handler, query(AllOf(HasSubstr("COUNT"), HasSubstr("positives"))))
+      .Times(3)
+      .WillOnce(Return(QueryResult{{"COUNT(DISTINCT word)", {"0"}}}))
+      .WillOnce(Return(QueryResult{{"COUNT(DISTINCT word)", {"1"}}}))
+      .WillRepeatedly(Return(QueryResult{{"COUNT(DISTINCT word)", {"2"}}}));
+
+  SqliteDictionary<MockSqliteHandler> dictionary(&handler);
+  ASSERT_EQ(dictionary.positivesCountUniques(), 0);
+  dictionary.add("banana", Sentiment::positive);
+  ASSERT_EQ(dictionary.positivesCountUniques(), 1);
+  dictionary.add("split", Sentiment::positive);
+  dictionary.add("banana", Sentiment::positive);
+  ASSERT_EQ(dictionary.positivesCountUniques(), 2);
+}
+
 TEST(SqliteDictionaryTest, negativesCount) {
   MockSqliteHandler handler;
   EXPECT_CALL(handler, query(HasSubstr("CREATE"))).Times(2);
@@ -100,6 +119,25 @@ TEST(SqliteDictionaryTest, negativesCount) {
   dictionary.add("banana", Sentiment::negative);
   dictionary.add("banana", Sentiment::negative);
   ASSERT_EQ(dictionary.negativesCount(), 3);
+}
+
+TEST(SqliteDictionaryTest, negativesCountUniques) {
+  MockSqliteHandler handler;
+  EXPECT_CALL(handler, query(HasSubstr("CREATE"))).Times(2);
+  EXPECT_CALL(handler, query(HasSubstr("INSERT"))).Times(3);
+  EXPECT_CALL(handler, query(AllOf(HasSubstr("COUNT"), HasSubstr("negatives"))))
+      .Times(3)
+      .WillOnce(Return(QueryResult{{"COUNT(DISTINCT word)", {"0"}}}))
+      .WillOnce(Return(QueryResult{{"COUNT(DISTINCT word)", {"1"}}}))
+      .WillRepeatedly(Return(QueryResult{{"COUNT(DISTINCT word)", {"2"}}}));
+
+  SqliteDictionary<MockSqliteHandler> dictionary(&handler);
+  ASSERT_EQ(dictionary.negativesCountUniques(), 0);
+  dictionary.add("banana", Sentiment::negative);
+  ASSERT_EQ(dictionary.negativesCountUniques(), 1);
+  dictionary.add("split", Sentiment::negative);
+  dictionary.add("banana", Sentiment::negative);
+  ASSERT_EQ(dictionary.negativesCountUniques(), 2);
 }
 
 TEST(SqliteDictionaryTest, positivesCountOfAWord) {
