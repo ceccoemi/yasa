@@ -8,16 +8,16 @@
 2. [Applied techniques and frameworks](#applied-techniques-and-frameworks)
 3. [Design and implementation choices](#design-and-implementations-choices)
 4. [Some of the problems encountered and how we have solved them](#possible-problems-encountered-and-how-you-solve-them)
-5. [Descriptions of the development (and testing) of the most interesting parts](#descriptions-of-the-development-(and testing)-of-the-most-interesting-parts)
+5. [Descriptions of the development and testing of the most interesting parts](#descriptions-of-the-development-and-testing-of-the-most-interesting-parts)
 6. [Explanation of some of the tools used](#explanation-of-some-of-the-tools-used)
 
 ## What we have implemented
-We implemented **[yasa](https://github.com/ceccoemi/yasa) ** (Yet Another Sentiment Analyser), a containerized command line tool that make easy the application of Sentiment Analysis.
+We implemented [yasa](https://github.com/ceccoemi/yasa) (Yet Another Sentiment Analyser), a containerized command line tool that make easy the application of Sentiment Analysis.
 **yasa** allows to train an underneath model of sentiment analysis with text files labeled as positives or negatives. After the training phase the model is able to predict the label of an unseen text file into positive/negative.
 
-The management of this model is done through a command line interface (CLI). The model can be trained feeding it on a folder containing positives text and/or folder containing negatives text. The following command is an example of usage:
+The management of this model is done through a command line interface (CLI). The model can be trained by feeding it with a folder containing positives text and/or folder containing negatives text. The following command is an example of usage:
 
-    docker run \
+    $ Docker run \
         --mount type=bind,source=<path-to-yasa.db>,target=/yasa.db \
         --mount type=bind,source=<path-to-pos-dir>,target=/<pos-dir>,readonly \
         --mount type=bind,source=<path-to-neg-dir>,target=/<neg-dir>,readonly \
@@ -25,29 +25,31 @@ The management of this model is done through a command line interface (CLI). The
 
 After trained, the model is able to classify a text file using the following command:
 
-    docker run \
+    $ Docker run \
         --mount type=bind,source=<path-to-yasa.db>,target=/yasa.db \
         --mount type=bind,source=<path-to-file-to-classify>,target=/<file-to-classify>,readonly \
         --rm --tty yasa classify -f <file-to-classify>
 
-The `yasa.db` file must exists, moreover files and directories used must be bound to the container. This can be achieved with docker volumes or docker bind mounts.
+The `yasa.db` file must exists (you can create it with `$ touch yasa.db`), moreover files and directories used must be bound to the container, which can be achieved with Docker volumes or Docker bind mounts. The training phase will update this file `yasa.db`, which can be stored and used later for the classification phase or for another training.
 
-For example in order to train the underneath model with all the text files in the directories `"$PWD"/example/pos` and `"$PWD"/example/neg`, you can use the following command:
+For example in order to train the underneath model with all the text files in the directories `example/pos` and `example/neg`, you can use the following command (it can take about 5 minutes):
 
-    docker run \
+    $ Docker run \
         --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
-        --mount type=bind,source="$PWD"/example,target=/example,readonly \
-        --rm --tty yasa train -n example/neg -p example/pos
+        --mount type=bind,source="$PWD"/example/pos,target=/pos,readonly \
+        --mount type=bind,source="$PWD"/example/neg,target=/neg,readonly \
+        --rm --tty yasa train -p pos -n neg
 
-If you want to classify e.g. the `"$PWD"/example/neg.txt` file with the model trained just before, you can use the following command:
+If you want to classify e.g. the `example/neg.txt` file with the model trained just before, you can use the following command:
 
-    docker run \
+    $ Docker run \
         --mount type=bind,source="$PWD"/yasa.db,target=/yasa.db \
-        --mount type=bind,source="$PWD"/example,target=/example,readonly \
-        --rm --tty yasa classify -f example/neg.txt
+        --mount type=bind,source="$PWD"/example/neg.txt,target=/neg.txt,readonly \
+        --rm --tty yasa classify -f neg.txt
 
 ## Applied techniques and frameworks
-The software is implemented in C++ and in order to make it reproducible and portable we use docker. To store all the information that the underneath model needs, we use SQLite that is a database management system (DBMS) based on a relational model.
+
+The software is implemented in C++ and in order to make it reproducible and portable we use Docker. To store all the information that the underneath model needs, we use SQLite that is a database management system (DBMS) based on a relational model.
 
 - **Test ->** [Google Test](https://github.com/google/googletest)
 - **Mock ->** [Google Mock](https://github.com/google/googletest/tree/master/googlemock)
@@ -67,6 +69,7 @@ Then there are three possibilities:
 
 * train;
 * classify;
+* display version;
 * display usage message.
 
 The training is handled by the `Trainer` class that:
@@ -87,16 +90,16 @@ Usage messages to displayed are managed by the `ArgumentParser` class.
 ## Some of the problems encountered and how we have solved them
 The management of SQLite database was one of the biggest challenges because its implementation in C language did not fit well with our other C++ classes. We have solved this problem encapsulating the necessary functionality of the API wrapping it in our `SqliteHandler` C++ class.
 
-We initially missed the concept of isolation for unit-tests: when a bug in a component caused tests of other components to fail. Then Google Mock came into rescue!
+We initially missed the concept of isolation for unit-tests: we realized it when a bug in a component caused tests of other components to fail. Then Google Mock came into rescue!
 
-* Google Mock requires a virtual implementation of the class to mock. Both original and mocked classes will inherit from their virtual base class. For example, in our case the mocked class `MockDictionary` and the original class `SqliteDictionary` both inherit from the `Dictionary` interface.
-
-## Descriptions of the development (and testing) of the most interesting parts
+## Descriptions of the development and testing of the most interesting parts
 Initially the subject of our project was a preprocessing tool for natural language processing. We changed almost completely the project due to give more sense to the application of a database and in order to have a more concrete goal.
 
-One of the most difficult parts to test was the main because it has a lot of logic branches. We delegates much of the responsabilities of the main to the `ArgumentParser` class.
+One of the most difficult parts to test was the main because it has a lot of logic branches. We delegate much of the responsibilities of the main to the `ArgumentParser` class.
 
-[//]: # (At some point during the development of this project, there was a folder `./tests/resources` that contained examples of text files. They allowed us to test `Trainer` and `Classifier` classes, but we understood that with a mock object on the text files we would achieve a more isolated unit-tests for both `Trainer` and `Classifier` classes.)
+At some point during the development of this project, there was a folder `tests/resources` that contained examples of text files. It allowed us to test `Trainer` and `Classifier` classes, but we understood that with a mock object on the text files we would achieve a more isolated unit-tests for both `Trainer` and `Classifier` classes.
+
+The shell script `run_example.sh` can be considered as **integration test**, because it executes both the training and classifying phases with real files and with a real database. Since the training process can take time, it is executed in Travis CI.
 
 ## Explanation of some of the tools used
 
@@ -109,7 +112,7 @@ LGTM processes the contents of software development projects whose source code i
 If the project you're interested in isn't already on LGTM, simply log in and [add it](https://lgtm.com/help/lgtm/adding-projects)  directly from your Project lists page. In this way you enable automated code review for your project's pull requests.
 
 ### CodeCov
-[Codecov](https://codecov.io/) provides an online tool to visualize automatically code coverage report(s) easly. Codecov delivers or "injects" coverage metrics directly into the modern workflow to promote more code coverage, especially in pull requests where new features and bug fixes commonly occur.
+[Codecov](https://codecov.io/) provides an online tool to visualize automatically code coverage report(s) easily. Codecov delivers or "injects" coverage metrics directly into the modern workflow to promote more code coverage, especially in pull requests where new features and bug fixes commonly occur.
 
 We use CodeCov following these simple steps:
 
@@ -243,7 +246,7 @@ Here the fixture class is `SqliteHandlerDbTest`, which stores the database file 
 First of all we have to define an interface and we took a piece of the `Dictionary` interface from our project as an example:
 
     #pragma once
-    
+
     #include <string>
 
     class Dictionary {
@@ -272,7 +275,7 @@ After the process, you should have something like:
     #include "gmock/gmock.h"
     #include "Dictionary.h"
     #include <string>
-    
+
     class MockDictionary : public Dictionary {
       public:
         MOCK_METHOD1(positivesCount, int(const std::string& word));
@@ -281,6 +284,7 @@ After the process, you should have something like:
     };
 
 Once you have a mock class, using it is easy. The typical work flow is:
+
 1. import the gMock names from the testing namespace such that you can use them unqualified;
 2. create some mock objects;
 3. specify your expectations on them;
@@ -295,17 +299,15 @@ Here's an example:
     #include "gtest/gtest.h"
     #include <vector>
     #include <string>
-    
+
     using ::testing::_;  // #1
-    
+
     TEST(Classifier, ClassifiyWithNoWords) {
       MockDictionary dictionary;  // #2
       EXPECT_CALL(dictionary, positivesCount(_)).Times(0);  // #3
       EXPECT_CALL(dictionary, negativesCount(_)).Times(0);  // #3
-            
+
       Classifier classifier(&dictionary);
       std::vector<std::string> words{};
       classifier.classify(words);  // #4
     }  // #5
-
-***
