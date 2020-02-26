@@ -1,8 +1,10 @@
 #pragma once
 
-#include "QueryResult.h"
-
 #include <sqlite3.h>
+
+#include <string>
+
+#include "QueryResult.h"
 
 class SqliteHandler {
  public:

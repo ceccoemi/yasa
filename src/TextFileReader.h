@@ -1,6 +1,7 @@
 #pragma once
 
 #include <experimental/filesystem>
+#include <string>
 
 #include "FileReader.h"
 

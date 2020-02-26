@@ -2,9 +2,7 @@
 
 #include <algorithm>
 #include <cctype>
-#include <fstream>
 #include <iterator>
-#include <sstream>
 
 const std::vector<std::string> stopwords{
     "a",         "about",        "above",      "above",      "across",

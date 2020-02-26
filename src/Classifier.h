@@ -3,8 +3,9 @@
 #include <string>
 #include <vector>
 
-#include "Dictionary.h"
 #include "Sentiment.h"
+
+class Dictionary;
 
 class Classifier {
  public:

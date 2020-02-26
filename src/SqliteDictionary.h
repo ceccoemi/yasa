@@ -1,10 +1,11 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "Dictionary.h"
+#include "QueryResult.h"
 #include "Sentiment.h"
-#include "SqliteHandler.h"
 
 template <class Handler>  // template needed for mocking purposes
 class SqliteDictionary : public Dictionary {
