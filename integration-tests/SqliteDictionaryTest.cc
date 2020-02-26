@@ -1,4 +1,3 @@
-#include <QueryResult.h>
 #include <Sentiment.h>
 #include <SqliteDictionary.h>
 #include <SqliteHandler.h>
