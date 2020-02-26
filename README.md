@@ -100,3 +100,8 @@ The main advantage with a local build is that you don't have to manage the data 
     $ yasa classify -f example/pos.txt
     ...
     $ yasa classify -f example/neg.txt
+
+## Contributors
+
+* [Emilio Cecchini](https://github.com/ceccoemi)
+* [Lorenzo Palloni](https://github.com/deeplego)
